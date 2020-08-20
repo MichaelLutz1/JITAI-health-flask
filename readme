@@ -1,0 +1,4 @@
+Download repository
+Open command terminal and cd
+python -m pip3 install -r requirements.txt
+python JITAI_server.py

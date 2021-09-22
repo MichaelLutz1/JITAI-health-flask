@@ -1,6 +1,14 @@
 Flask
 Flask-Assets
+pathlib
+twilio
+dnspython
+asyncio_dispatch
 schedule
 pymongo
+nokia
+asyncio
+transitions
+matplotlib
 
 

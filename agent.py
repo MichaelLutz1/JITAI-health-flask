@@ -1,9 +1,9 @@
 import pymongo
 from pymongo import MongoClient
 from database_access import *
-import requests
-import requests.auth
-from uuid import uuid4
+#import requests
+#import requests.auth
+#from uuid import uuid4
 import urllib.parse
 from datetime import datetime
 import multiprocessing
@@ -11,7 +11,7 @@ import os
 import schedule
 import logging
 import queue
-from agent_messages import *
+#from agent_messages import *
 import calendar
 
 

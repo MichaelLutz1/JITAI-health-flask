@@ -1,0 +1,15 @@
+<form action = "/dashboard" method="POST">
+
+ Participant ID:&nbsp
+<select class="dropdown" id="participants" name="participants">
+<option value="all">ALL</option>
+{%for item in data%}
+  <option value={{item}}>{{item}}</option>
+{% endfor %}
+</select> &nbsp &nbsp &nbsp &nbsp
+
+ <input type="date" name="start_date"> &nbsp &nbsp &nbsp &nbsp
+<input type="date" name="end_date"> &nbsp &nbsp &nbsp &nbsp
+ <input type="submit" name="submit" value="stats_summ">
+<br><br><br><br>
+</form>

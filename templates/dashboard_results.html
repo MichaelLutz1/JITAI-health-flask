@@ -1,0 +1,54 @@
+<script>
+.under-limit { background-color: red; }
+</script>
+
+{% include 'dashboard.html' %}
+
+<html>
+<head>
+    <style>
+    table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    }
+
+    td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+    }
+    </style>
+    </head>
+<body>
+     <table>
+        <tr>
+         {% for item in participant_columns%}
+         <th>{{ item }}</th>
+         {% endfor %}
+          </tr>
+         {# here we iterate over every item in our list which we will pass from bar() #}
+         
+         {% for row in participant_data %}
+        <tr> 
+            {% for cell in row %}
+            
+                {%if cell == "True"%}
+                {%if loop.index == 13%}
+                    <td style ="background-color: red">{{ cell }}</td> 
+                    {% endif %}
+
+             {% elif cell == 0 or cell[0] == 0%}
+                    <td style ="background-color: blue">{{ cell }}</td> 
+             {%else%}
+                    <td>{{ cell }}</td> 
+             {% endif %}
+
+        
+            {% endfor %}
+        </tr>
+         {% endfor %}
+        
+     </table>
+ </body>
+ </html>

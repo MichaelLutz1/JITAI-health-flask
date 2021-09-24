@@ -46,7 +46,7 @@ def home():
     return render_template('index.html')
 
 
-def get_dashboard_cell_color(color_scheme, data):
+"""def get_dashboard_cell_color(color_scheme, data):
     # color_scheme [(start,end, color)...]
     for color_range in color_scheme:
         start, end, color = color_range
@@ -58,7 +58,7 @@ def get_dashboard_cell_color(color_scheme, data):
 
 """
 
-Registers the participants and creates a new agent for each user
+#Registers the participants and creates a new agent for each user
 
 """
 
@@ -172,7 +172,7 @@ def stats():
     return render_template('participant_results.html', participant_details=participant_details)
 
 
-
+"""
 
 if __name__ == '__main__':
 

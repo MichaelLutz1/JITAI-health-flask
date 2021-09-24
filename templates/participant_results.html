@@ -1,0 +1,112 @@
+<script>
+
+function downloadCSV(csv, filename) {
+    var csvFile;
+    var downloadLink;
+
+    // CSV file
+    csvFile = new Blob([csv], {type: "text/csv"});
+
+    // Download link
+    downloadLink = document.createElement("a");
+
+    // File name
+    downloadLink.download = filename;
+
+    // Create a link to the file
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+
+    // Hide download link
+    downloadLink.style.display = "none";
+
+    // Add the link to DOM
+    document.body.appendChild(downloadLink);
+
+    // Click download link
+    downloadLink.click();
+}
+
+function exportTableToCSV(filename) {
+    var csv = [];
+    var rows = document.querySelectorAll("table tr");
+    
+    for (var i = 0; i < rows.length; i++) {
+        var row = [], cols = rows[i].querySelectorAll("td, th");
+        for (var j = 0; j < cols.length ; j++) 
+
+            if(i % 2 != 0)
+            {
+                if(j == 0)
+                {
+                    row.push(" ")
+                }
+
+                else
+                {
+                row.push(cols[j-1].innerText);
+                }
+                if(j == cols.length - 1)
+                {
+                    row.push(cols[j].innerText)
+                }
+            }
+            else
+            {
+                row.push(cols[j].innerText);   
+            }
+            
+        
+        csv.push(row.join(","));        
+    }
+
+    // Download CSV file
+    downloadCSV(csv.join("\n"), filename);
+}
+ 
+</script>
+{% include 'participant_details.html' %}
+
+<html>
+<head>
+<button onclick="exportTableToCSV('members.csv')" style="float: right;">Export HTML Table To CSV File</button>
+<br> <br> <br>
+    <style>
+    table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 80%;
+    }
+
+    td, th {
+    border: 1px solid #dddddd;
+    text-align: center;
+    padding: 8px;
+    }
+    </style>
+    </head>
+<body>
+
+
+     <table align="center">
+
+
+            {% for item in participant_details %}
+            <tr>
+           
+                <th rowspan = 2 style="text-align:center"> {{ item[1] }} </th>
+                {% for subheader in item[2]  %}
+                    <th>{{ subheader }}</th>
+                {% endfor %}  
+            </tr>
+            <tr>
+                {% for data in  item[3]  %}
+                    <td>{{ data }}</td>
+                {% endfor %}
+            </tr> 
+            
+            {% endfor %}
+
+        
+     </table>
+ </body>
+ </html>

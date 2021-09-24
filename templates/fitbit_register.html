@@ -1,0 +1,120 @@
+<form action = "/besmart/register" method="POST">
+     Name:<br>
+  <input type="text" name="name"><br>
+    Phone Number:<br>
+  <input type="text" name="number"> <br> 
+   Participant ID: <br>
+   <input type="text" name="p_id"> <br> 
+  Resting HR:<br>
+  <input type="text" name="resting_HR"> <br> <br>
+  Age predicted max HR:<br>
+   <input type="text" name="hrr"> <br> <br>
+   Target Intensity: <br>
+   <input type="text" name="min_intensity"> &nbsp &nbsp <input type="text" name="max_intensity"> <br> <br>
+
+  Target HR:<br>
+  <input type="text" name="min_HR"> &nbsp &nbsp <input type="text" name="max_HR"> <br> <br>
+
+  PA type:&nbsp
+  <select class="dropdown" id="pa_type" name="pa_type">
+  <option value="walk">Walk</option>
+  <option value="run">Run</option>
+</select> <br> <br>
+
+
+  PA Stage of Change:&nbsp
+<select class="dropdown" id="pa_stage" name="pa_stage">
+  <option value="preparation">Preparation</option>
+  <option value="contemplation">Contemplation</option>
+  <option value="action">Action</option>
+   PA Stage of Change:
+</select> <br> <br>
+
+ Remainder Time: <br>
+  <input type="text" name="start_time"> <br> 
+
+ Midweek Time: <br>
+  <input type="text" name="mid_time"> <br> 
+
+End Time: <br>
+  <input type="text" name="end_time"> <br> 
+
+  Bout Length: <br>
+  <input type="text" name="bout_len"> <br> 
+  Number of bouts in a day: <br>
+    <input type="text" name="no_bout"> <br> <br>
+
+  Frequency: <br>
+  <input type ="text" name="frequency" <br><br>
+
+  Duration: <br>
+  <input type ="text" name="duration" <br><br>
+
+  Sleep goal: <br>
+   <input type="text" name="sleep_start"> &nbsp &nbsp <input type="text" name="sleep_end"> <br> <br>
+
+
+  PA barriers: <br>
+
+  <textarea rows = "6" cols = "50" name = "pa_barriers"> 
+  Enter text here ....
+  </textarea>
+  <br><br>
+
+  PA strategies: <br>
+  <textarea rows = "6" cols = "50" name = "pa_strategies">  
+  Enter text here ....
+  </textarea>
+  <br><br>
+
+  Sleep barriers: <br>
+
+  <textarea rows = "6" cols = "50" name = "sleep_barriers"> 
+  Enter text here ....
+  </textarea>
+  <br><br>
+
+  Sleep strategies: <br>
+  
+  <textarea rows = "6" cols = "50" name = "sleep_strategies"> 
+  Enter text here ....
+  </textarea>
+  
+  <br><br>
+
+   Sleep stage:&nbsp
+<select class="dropdown" id="sleep_stage" name="sleep_stage">
+  <option value="efficiency">Efficiency</option>
+  <option value="duration">Duration</option> 
+  </select>
+  <br><br>
+
+
+Sleep duration days:<br>
+<input type="text" name="dur_days"> <br> <br>
+
+
+Week number: <br>
+<input type ="text" name="week_number" <br><br>
+
+
+ Monitor/Blunter: &nbsp
+<select class="dropdown" id="m_b" name="m_b">
+  <option value="monitor">monitor</option>
+  <option value="blunter">blunter</option>
+
+Monitor/Blunter :
+</select> <br> <br>
+
+<!-- <a href="https://www.fitbit.com/oauth2/authorize?client_id=22D7LV&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A9001%2Ffitbit_callback&scope=activity+heartrate+location+nutrition+sleep+profile+settings+weight+social
+" target="_blank">Authenticate with fitbit</a> <br> <br> -->
+<a href="https://www.fitbit.com/oauth2/authorize?client_id=22D7LV&response_type=code&redirect_uri=https%3A%2F%2Fmas.cis.udel.edu%2Fbesmart%2Ffitbit_callback&scope=activity+heartrate+location+nutrition+sleep+profile+settings+weight+social
+" target="_blank">Authenticate with fitbit</a> <br> <br>
+<!--<a href="https://account.withings.com/oauth2_user/authorize2?response_type=code&client_id=95b210ea15235bd4351b2ea91d001e345ddc3990ef61de8966c70036d3048dc6&redirect_uri=http%3A%2F%2Flocalhost%3A9001%2Fbp_callback&scope=user.activity%2Cuser.metrics%2Cuser.info%2Cuser.sleepevents&state=npu8GFTkHoQ7SIhO7hjrTnlfleFog4
+" target="_blank">Authenticate with Withings</a> <br> <br> -->
+<a href="https://account.withings.com/oauth2_user/authorize2?response_type=code&client_id=95b210ea15235bd4351b2ea91d001e345ddc3990ef61de8966c70036d3048dc6&redirect_uri=https%3A%2F%2Fmas.cis.udel.edu%2Fbesmart%2Fbp_callback&scope=user.activity%2Cuser.metrics%2Cuser.info%2Cuser.sleepevents&state=npu8GFTkHoQ7SIhO7hjrTnlfleFog4
+" target="_blank">Authenticate with Withings</a> <br> <br>" 
+<a href = "/besmart/register"> <input type="submit" name="register" value="register">
+
+
+</form>

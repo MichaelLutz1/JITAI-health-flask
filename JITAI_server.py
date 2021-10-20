@@ -174,6 +174,20 @@ def stats():
 
 """
 
+app.route("/message", methods=['GET', 'POST'])
+def incoming_message():
+    # Respond to incoming messages with a friendly SMS.
+    # Start our response
+    global logger
+    logger.debug("%s inside post message")
+    content = request.json
+    
+    print(content['nudge_text'])
+    insert_participant_info(content['particiapnt_id'], content['nudge_text'])
+    
+
+    return 'OK'
+
 if __name__ == '__main__':
 
     app.run(host='127.0.0.1', debug=True, port=9001)

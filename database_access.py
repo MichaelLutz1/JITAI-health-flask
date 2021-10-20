@@ -53,13 +53,11 @@ def get_participant_info():
 
 
 
-def insert_participant_info(name, number, participant_id, socket):
+def insert_participant_info(nudge_text, participant_id):
     participant_info_collection = get_participant_info()
     participant_info_collection.insert_one({
         "participant_id": participant_id,
-        "name": name,
-        "number": number,
-        "socket": socket
+        "nudge_text": nudge_text
     })
     close_db()
 

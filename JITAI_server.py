@@ -17,14 +17,6 @@ message_queue = queue.Queue()
 logger = None
 participant_id_list = []
 
-@app.before_first_request
-def declareStuff():
-    global message_queue, logger
-    message_queue = queue.Queue()
-    logger = setup_logger('main_server', 'main_server.log')
-    logger.debug("main id %s", id(message_queue))
-    get_db()
-    create_data()
 
 
 def setup_logger(name, log_file, level=logging.DEBUG):
@@ -42,11 +34,54 @@ def setup_logger(name, log_file, level=logging.DEBUG):
 
 @app.route('/')
 def home():
-
     return render_template('index.html')
 
 
-"""def get_dashboard_cell_color(color_scheme, data):
+
+@app.route("/MPAS-listener", methods=["POST"])
+def participant_data():
+    global logger
+    content = request.json
+
+    import process_data
+    process_data.process_participant_data(content)
+
+    return "OK"
+
+
+
+#Initialize some stuff before running the app
+message_queue = queue.Queue()
+logger = setup_logger('main_server', 'main_server.log')
+logger.debug("main id %s", id(message_queue))
+get_db()
+create_data()
+
+if __name__ == '__main__':
+    app.run(host='127.0.0.1', debug=True, port=9001)
+
+
+
+
+
+
+"""
+@app.route("/message", methods=['GET', 'POST'])
+def incoming_message():
+    # Respond to incoming messages with a friendly SMS.
+    # Start our response
+    global logger
+    logger.debug("%s inside post message")
+    content = request.json
+    
+    print(content['nudge_text'])
+    insert_participant_info(content['particiapnt_id'], content['nudge_text'])
+    
+
+    return 'OK'
+
+
+def get_dashboard_cell_color(color_scheme, data):
     # color_scheme [(start,end, color)...]
     for color_range in color_scheme:
         start, end, color = color_range
@@ -173,21 +208,3 @@ def stats():
 
 
 """
-
-app.route("/message", methods=['GET', 'POST'])
-def incoming_message():
-    # Respond to incoming messages with a friendly SMS.
-    # Start our response
-    global logger
-    logger.debug("%s inside post message")
-    content = request.json
-    
-    print(content['nudge_text'])
-    insert_participant_info(content['particiapnt_id'], content['nudge_text'])
-    
-
-    return 'OK'
-
-if __name__ == '__main__':
-
-    app.run(host='127.0.0.1', debug=True, port=9001)

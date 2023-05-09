@@ -1,4 +1,4 @@
-database_name = "BeSmart"
+database_name = "JITAI_MPAS"
 database_ip_address = "127.0.0.1"
 database_port = 27017
 

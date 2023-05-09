@@ -38,15 +38,17 @@ def home():
 
 
 
-@app.route("/MPAS-listener", methods=["POST"])
-def participant_data():
+@app.route("/MPAS", methods=["POST", "GET"])
+def MPAS_page():
     global logger
-    content = request.json
-
-    import process_data
-    process_data.process_participant_data(content)
-
-    return "OK"
+    
+    if request.method == "POST":
+        content = request.json
+        import process_data
+        process_data.process_participant_data(content)
+        return "OK"
+    else:
+        return render_template("MPAS.html")
 
 
 
@@ -55,7 +57,7 @@ message_queue = queue.Queue()
 logger = setup_logger('main_server', 'main_server.log')
 logger.debug("main id %s", id(message_queue))
 get_db()
-create_data()
+#create_data()
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', debug=True, port=9001)

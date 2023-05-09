@@ -9,6 +9,13 @@ import logging
 logger = logging.getLogger('jitai_server.log')
 
 
+def write_participant_data(data):
+    global __client
+    collection = __client[database_name]["participant_data"]
+    collection.insert_one(data)
+    
+
+
 def get_db():
     # ensure there's only one instance of MongoDB running
     global __client

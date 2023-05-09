@@ -1,3 +1,6 @@
+import database_access
+from pymongo import MongoClient
+
 
 """
 data = {
@@ -15,8 +18,7 @@ data = {
 }
 """
 
-
 #data is an array of the above data struct
 def process_participant_data(data_arr):
-    for d in data_arr:
-        print(d["heartrate"])
+    for data in data_arr:
+        database_access.write_participant_data(data)

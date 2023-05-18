@@ -17,8 +17,15 @@ data = {
     "participantid":""                      String
 }
 """
+#converts "nil" and "" to None
+def is_nullish(thing):
+    if thing=="nil" or thing=="":
+        return None
+    return thing
 
 #data is an array of the above data struct
 def process_participant_data(data_arr):
     for data in data_arr:
+        for key in data:
+            data[key] = is_nullish(data[key])
         database_access.write_participant_data(data)

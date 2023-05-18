@@ -48,19 +48,21 @@ def MPAS_page():
         process_data.process_participant_data(content)
         return "OK"
     else:
-        return render_template("MPAS.html")
+        participants = get_participants()
+        print("participants: ", participants)
+        return render_template("MPAS.html", participants=participants)
 
 
 
 #Initialize some stuff before running the app
 message_queue = queue.Queue()
 logger = setup_logger('main_server', 'main_server.log')
-logger.debug("main id %s", id(message_queue))
+database_logger = setup_logger("database", "database.log")
 get_db()
 #create_data()
 
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', debug=True, port=9001)
+    app.run(host='0.0.0.0', debug=True, port=9001)
 
 
 

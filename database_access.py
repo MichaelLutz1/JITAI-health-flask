@@ -5,15 +5,23 @@ from bson import ObjectId
 __client = None
 from datetime import *
 import logging
+import queue
 
-logger = logging.getLogger('jitai_server.log')
-
+logger = logging.getLogger('database.log')
+message_queue = queue.Queue()
 
 def write_participant_data(data):
-    global __client
-    collection = __client[database_name]["participant_data"]
+    if data["participantid"] == "" or data["participantid"] == None:
+        logger.error("No participant id")
+        return
+    collection = get_db()[database_name][data["participantid"]]
     collection.insert_one(data)
     
+    
+def get_participants():
+    db = get_db()
+    collections = db.list_collection_names()
+    return [c.split('.', 1)[1] for c in collections]
 
 
 def get_db():

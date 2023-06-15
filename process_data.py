@@ -11,15 +11,15 @@ data = {
     "activeenergy":0,                       Number
     "restingenergy":0,                      Number
     "battery":-1,                           Number, -1 if unavailable
-    "time":"2023-05-05 17:27:03 +0000",     String
+    "time":"2023-05-05 17:27:03.0000",      String
     "stepcount":1,                          Number
     "heartrate":61,                         Number
     "participantid":""                      String
 }
 """
-#converts "nil" and "" to None
+#converts "nil", "", "nan" to None
 def is_nullish(thing):
-    if thing=="nil" or thing=="":
+    if thing=="nil" or thing=="" or thing=="nan":
         return None
     return thing
 

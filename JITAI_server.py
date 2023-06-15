@@ -1,6 +1,5 @@
 
 from database_access import *
-from agent import *
 from flask import Flask, abort, request, render_template, redirect
 import json
 #import HTML
@@ -13,7 +12,6 @@ database_port = 27017
 agent_list = []
 socket = 49153
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
-message_queue = queue.Queue()
 logger = None
 participant_id_list = []
 
@@ -58,7 +56,7 @@ def MPAS_page():
 
 
 #Initialize some stuff before running the app
-message_queue = queue.Queue()
+#message_queue = queue.Queue()
 logger = setup_logger('main_server', 'main_server.log')
 database_logger = setup_logger("database", "database.log")
 get_db()

@@ -43,10 +43,13 @@ def MPAS_page():
     global logger
     
     if request.method == "POST":
-        content = request.json
-        import process_data
-        process_data.process_participant_data(content)
-        return "OK"
+        try:
+            content = request.json
+            import process_data
+            process_data.process_participant_data(content)
+            return "OK"
+        except:
+            print("Error", request.data)
     else:
         participants = get_participants()
         print("participants: ", participants)

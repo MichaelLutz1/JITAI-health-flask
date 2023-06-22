@@ -1,14 +1,15 @@
+import queue
+import logging
+from datetime import *
 from pymongo import MongoClient
 from constants import database_name, database_port, database_ip_address
 import json
 from bson import ObjectId
 __client = None
-from datetime import *
-import logging
-import queue
 
 logger = logging.getLogger('database.log')
 message_queue = queue.Queue()
+
 
 def write_participant_data(data):
     if data["participantid"] == "" or data["participantid"] == None:
@@ -16,8 +17,8 @@ def write_participant_data(data):
         return
     collection = get_db()[database_name][data["participantid"]]
     collection.insert_one(data)
-    
-    
+
+
 def get_participants():
     db = get_db()
     collections = db.list_collection_names()
@@ -54,18 +55,16 @@ def create_data():
 
 def get_dialogue():
     db = get_db()
-    if "dialogue" not in db.collection_names():
+    if "dialogue" not in db.list_collection_names():
         dialogue = db["dialogue"]
     return db["dialogue"]
 
 
 def get_participant_info():
     db = get_db()
-    if "participant_info" not in db.collection_names():
+    if "participant_info" not in db.list_collection_names():
         participant_info = db["participant_info"]
     return db["participant_info"]
-
-
 
 
 def insert_participant_info(nudge_text, participant_id):
@@ -90,21 +89,44 @@ def get_participant_details(number):
     return name, number, participant_id, socket
 
 
-def all_dashboard_data(participants, start_date, end_date):
-    
-    return 
+def request_dashboard_data(requested_id, start_date, end_date):
+    db = get_db()
+    response = {}
+    query = {
+        'time': {
+            '$gte': start_date,
+            '$lte': end_date
+        }
+    }
+
+    if requested_id == 'all':
+        collection_names = db.list_collection_names()
+        for collection_name in collection_names:
+            participant = db[collection_name]
+            data = list(participant.find(query))
+            for item in data:
+                item['_id'] = str(item['_id'])
+            response[collection_name.split('.')[1]] = data
+
+    else:
+        participant = db[database_name][requested_id]
+        data = list(participant.find(query))
+        for item in data:
+            item['_id'] = str(item['_id'])
+        response[requested_id] = data
+    return response
 
 
 def weekly_data(participants, start_date, end_date, week):
 
+    return
 
-    return 
 
 def dialogue_data(participants, start_date, end_date):
-    
-    return 
+
+    return
 
 
 def participant_details_data(participants, start_date, end_date):
 
-    return 
+    return

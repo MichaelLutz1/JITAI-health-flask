@@ -1,8 +1,8 @@
 
 from database_access import *
-from flask import Flask, abort, request, render_template, redirect
+from flask import Flask, abort, request, render_template, redirect, jsonify
 import json
-#import HTML
+# import HTML
 import queue
 import logging
 app = Flask(__name__)
@@ -14,7 +14,6 @@ socket = 49153
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 logger = None
 participant_id_list = []
-
 
 
 def setup_logger(name, log_file, level=logging.DEBUG):
@@ -35,11 +34,43 @@ def home():
     return render_template('index.html')
 
 
+@app.route('/dashboard', methods=['GET', 'POST'])
+def dashboard():
+    participants = get_participants()
+    return render_template('dashboard.html', participants=participants)
+
+
+@app.route('/dashboardapi', methods=['GET', 'POST'])
+def dashboardapi():
+    if request.method == 'POST':
+        requested_id = request.form["participants"]
+        start_date = request.form["start_date"]
+        end_date = request.form["end_date"]
+        data = request_dashboard_data(requested_id, start_date, end_date)
+        json_data = jsonify(data)
+        return json_data
+
+
+# @app.route('/dashboard', methods=['POST', 'GET'])
+# def stats_summ():
+#     participants = get_participants()
+#     if request.method == "POST":
+
+#         requested_id = request.form["participants"]
+#         start_date = request.form["start_date"]
+#         end_date = request.form["end_date"]
+
+#         participant_data = request_dashboard_data(
+#             requested_id, start_date, end_date)
+#         return render_template('dashboard_results.html', data=participants, participant_data=participant_data)
+#     else:
+#         return render_template('dashboard_results.html', data=participants)
+
 
 @app.route("/MPAS", methods=["POST", "GET"])
 def MPAS_page():
     global logger
-    
+
     if request.method == "POST":
         try:
             content = request.json
@@ -54,20 +85,15 @@ def MPAS_page():
         return render_template("MPAS.html", participants=participants)
 
 
-
-#Initialize some stuff before running the app
-#message_queue = queue.Queue()
+# Initialize some stuff before running the app
+# message_queue = queue.Queue()
 logger = setup_logger('main_server', 'main_server.log')
 database_logger = setup_logger("database", "database.log")
 get_db()
-#create_data()
+# create_data()
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True, port=9001)
-
-
-
-
 
 
 """
@@ -98,7 +124,7 @@ def get_dashboard_cell_color(color_scheme, data):
 
 """
 
-#Registers the participants and creates a new agent for each user
+# Registers the participants and creates a new agent for each user
 
 """
 

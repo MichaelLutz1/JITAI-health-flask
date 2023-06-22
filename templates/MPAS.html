@@ -1,23 +1,18 @@
 <script>
-function get_participant_results(participant) {
-    
-}
-
-
+  function get_participant_results(participant) {}
 </script>
-
 
 <!DOCTYPE html>
 <html>
-    <head></head>
-    <body>
-        <h1 style="text-align: center;">MPAS</h1>
-        <br/>
-        <label for="p">Select participant</label>
-        <select name="p" id="p">
-            {% for p in participants %}
-                <option value={{p}}>{{p}}</option>
-            {% endfor %}
-        </select>
-    </body>
+  <head></head>
+  <body>
+    <h1 style="text-align: center">MPAS</h1>
+    <br />
+    <label for="p">Select participant</label>
+    <select name="p" id="p">
+      {% for p in participants %}
+      <option value="{{p}}">{{p}}</option>
+      {% endfor %}
+    </select>
+  </body>
 </html>

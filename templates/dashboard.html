@@ -1,15 +1,53 @@
-<form action = "/dashboard" method="POST">
+<html>
+  <head>
+    <script src="../static/dashboard.js" defer></script>
+    <style>
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
 
- Participant ID:&nbsp
-<select class="dropdown" id="participants" name="participants">
-<option value="all">ALL</option>
-{%for item in data%}
-  <option value={{item}}>{{item}}</option>
-{% endfor %}
-</select> &nbsp &nbsp &nbsp &nbsp
+      th,
+      td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
 
- <input type="date" name="start_date"> &nbsp &nbsp &nbsp &nbsp
-<input type="date" name="end_date"> &nbsp &nbsp &nbsp &nbsp
- <input type="submit" name="submit" value="stats_summ">
-<br><br><br><br>
-</form>
+      th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+      }
+
+      tr:hover {
+        background-color: #f5f5f5;
+      }
+
+      /* Alternating row colors */
+      tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+    </style>
+  </head>
+  <body>
+    <form action="/dashboard" id="participantForm">
+      Participant ID:&nbsp
+      <select class="dropdown" id="participants" name="participants">
+        <option value="all">ALL</option>
+        {%for item in participants%}
+        <option value="{{item}}">{{item}}</option>
+        {% endfor %}
+      </select>
+
+      <input type="date" name="start_date" /> &nbsp &nbsp &nbsp &nbsp
+      <input type="date" name="end_date" /> &nbsp &nbsp &nbsp &nbsp
+      <input type="submit" name="submit" value="stats_summ" />
+    </form>
+    <table id="data_table">
+      <thead>
+        <tr></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </body>
+</html>

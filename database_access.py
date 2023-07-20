@@ -1,6 +1,6 @@
 import queue
 import logging
-from datetime import *
+from datetime import datetime
 from pymongo import MongoClient
 from constants import database_name, database_port, database_ip_address
 import json
@@ -89,32 +89,48 @@ def get_participant_details(number):
     return name, number, participant_id, socket
 
 
-def request_dashboard_data(requested_id, start_date, end_date):
+def request_dashboard_data():
     db = get_db()
     response = {}
-    query = {
-        'time': {
-            '$gte': start_date,
-            '$lte': end_date
-        }
-    }
-
-    if requested_id == 'all':
-        collection_names = db.list_collection_names()
-        for collection_name in collection_names:
-            participant = db[collection_name]
-            data = list(participant.find(query))
-            for item in data:
-                item['_id'] = str(item['_id'])
-            response[collection_name.split('.')[1]] = data
-
-    else:
-        participant = db[database_name][requested_id]
-        data = list(participant.find(query))
+    collection_names = db.list_collection_names()
+    for collection_name in collection_names:
+        participant = db[collection_name]
+        data = list(participant.find())
         for item in data:
             item['_id'] = str(item['_id'])
-        response[requested_id] = data
+        response[collection_name.split('.')[1].lower()] = data
     return response
+
+def minute_level_data(requested_participants, start_date, end_date):
+    db = get_db()
+    participant_columns = []
+    participant_data = []
+    start_default, end_default = str(datetime(1900,1,1)),str(datetime(9999,12,31))
+    query = {
+        'time': {
+            '$gte': start_date if start_date else start_default,
+            '$lte': end_date if end_date else end_default
+        }
+    }
+    first_collection_name = '.'.join([database_name,requested_participants[0]])
+    first_entry =list(db[first_collection_name].find_one({}, {'_id':0})) 
+    #first_entry.sort()
+    for header in first_entry:
+        participant_columns.append(header)
+    for requested_participant in requested_participants:
+        collection_name = f"JITAI_MPAS.{requested_participant}"
+
+        all_entries_in_timeframe = list(db[collection_name].find(query,{'_id':0}))
+        for entry in all_entries_in_timeframe:
+            row = []
+            for key in participant_columns:
+                row.append(entry[key])
+            participant_data.append(row)
+    return participant_columns,participant_data
+    
+
+
+
 
 
 def weekly_data(participants, start_date, end_date, week):

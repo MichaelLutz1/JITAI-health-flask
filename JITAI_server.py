@@ -42,29 +42,50 @@ def dashboard():
 
 @app.route('/dashboardapi', methods=['GET', 'POST'])
 def dashboardapi():
-    if request.method == 'POST':
-        requested_id = request.form["participants"]
-        start_date = request.form["start_date"]
-        end_date = request.form["end_date"]
-        data = request_dashboard_data(requested_id, start_date, end_date)
+    if request.method == 'GET':
+        data = request_dashboard_data()
         json_data = jsonify(data)
         return json_data
 
 
-# @app.route('/dashboard', methods=['POST', 'GET'])
-# def stats_summ():
-#     participants = get_participants()
-#     if request.method == "POST":
+@app.route('/dashboard', methods=['POST', 'GET'])
+def stats_summ():
+    participants = get_participants()
+    if request.method == "POST":
 
-#         requested_id = request.form["participants"]
-#         start_date = request.form["start_date"]
-#         end_date = request.form["end_date"]
+        requested_id = request.form["participants"]
+        start_date = request.form["start_date"]
+        end_date = request.form["end_date"]
 
-#         participant_data = request_dashboard_data(
-#             requested_id, start_date, end_date)
-#         return render_template('dashboard_results.html', data=participants, participant_data=participant_data)
-#     else:
-#         return render_template('dashboard_results.html', data=participants)
+        participant_data = request_dashboard_data(
+            requested_id, start_date, end_date)
+        return render_template('dashboard_results.html', data=participants, participant_data=participant_data)
+    else:
+        return render_template('dashboard_results.html', data=participants)
+
+
+# @app.route('/dashboard')
+# def dashboard():
+
+#     return render_template('dashboard.html', data=participant_id_list)
+
+@app.route('/minute_level', methods=['POST', 'GET'])
+def minute_level_page():
+    participants = get_participants()
+    if request.method == 'POST':
+        requested_participants = request.form["participants"]
+        start_date = request.form["start_date"]
+        end_date = request.form["end_date"]
+        if requested_participants == 'all':
+            requested_participants = [participant for participant in participants]
+        else:
+            requested_participants = [requested_participants]
+
+        participant_columns, participant_data = minute_level_data(
+            requested_participants, start_date, end_date)
+
+        return render_template('minute_level.html',participants=participants, participant_columns=participant_columns, participant_data=participant_data)
+    return render_template('minute_level.html', participants=participants)
 
 
 @app.route("/MPAS", methods=["POST", "GET"])

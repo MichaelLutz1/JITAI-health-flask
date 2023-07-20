@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Minute Level Data</title>
+    <link rel="stylesheet" href="../static/stylesheets/dashboard.css" />
+    <script src="../static/js/minute_level.js"></script>
+  </head>
+  <body>
+    <ul>
+      <li>
+        <a href="/#home">Home</a>
+      </li>
+      <li>
+        <a href="/dashboard">Dashboard</a>
+      </li>
+    </ul>
+    <h1 id="title">Minute Level Data</h1>
+    <form action="/minute_level" method="post">
+      <label for="participants">Participants:</label>
+      <select name="participants" id="participants">
+        <option value="all">All</option>
+        {%for person in participants%}
+        <option value="{{person}}">{{person}}</option>
+        {% endfor %}
+      </select>
+      <label for="start_date">Start Date:</label>
+      <input id="start_date" type="date" name="start_date" />
+      <label for="end_date">End Date:</label>
+      <input id="end_date" type="date" name="end_date" />
+      <button type="submit">Generate Data</button>
+    </form>
+    <div id="table-container">
+      <table id="data-table">
+        <tr>
+          {% for item in participant_columns%}
+          <th>{{ item }}</th>
+          {% endfor %}
+        </tr>
+
+        {% for row in participant_data %}
+        <tr>
+          {% for cell in row %}
+
+          <td>{{ cell }}</td>
+
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </body>
+</html>

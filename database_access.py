@@ -18,11 +18,18 @@ def write_participant_data(data):
     collection = get_db()[database_name][data["participantid"]]
     collection.insert_one(data)
 
+def write_participant_processed_data(data):
+    if data["participantid"] == "" or data["participantid"] == None:
+        logger.error("No participant id")
+        return
+    collection = get_db()[database_name]["Processed"][data["participantid"]]
+    collection.insert_one(data)
+
 
 def get_participants():
     db = get_db()
     collections = db.list_collection_names()
-    return [c.split('.', 1)[1] for c in collections]
+    return set(c.split('.')[-1] for c in collections)
 
 
 def get_db():
@@ -92,18 +99,19 @@ def get_participant_details(number):
 def request_dashboard_data():
     db = get_db()
     response = {}
-    collection_names = db.list_collection_names()
-    for collection_name in collection_names:
-        participant = db[collection_name]
-        data = list(participant.find())
+    participants = get_participants()
+    for participant in participants:
+        collection = db[database_name][participant]
+        data = list(collection.find())
         for item in data:
             item['_id'] = str(item['_id'])
-        response[collection_name.split('.')[1].lower()] = data
+        response[participant.lower()] = data
     return response
+
 
 def minute_level_data(requested_participants, start_date, end_date):
     db = get_db()
-    participant_columns = []
+    participant_columns = set()
     participant_data = []
     start_default, end_default = str(datetime(1900,1,1)),str(datetime(9999,12,31))
     query = {
@@ -112,20 +120,16 @@ def minute_level_data(requested_participants, start_date, end_date):
             '$lte': end_date if end_date else end_default
         }
     }
-    first_collection_name = '.'.join([database_name,requested_participants[0]])
-    first_entry =list(db[first_collection_name].find_one({}, {'_id':0})) 
-    #first_entry.sort()
-    for header in first_entry:
-        participant_columns.append(header)
     for requested_participant in requested_participants:
-        collection_name = f"JITAI_MPAS.{requested_participant}"
-
-        all_entries_in_timeframe = list(db[collection_name].find(query,{'_id':0}))
-        for entry in all_entries_in_timeframe:
-            row = []
-            for key in participant_columns:
-                row.append(entry[key])
-            participant_data.append(row)
+        collection = db[database_name]["Processed"][requested_participant]
+        if not collection.count_documents({}) == 0:
+            first_entry = list(collection.find_one({}, {'_id':0}))
+            for key in first_entry:
+                participant_columns.add(key)
+            all_entries_in_timeframe = list(collection.find(query,{'_id':0}))
+            for entry in all_entries_in_timeframe:
+                participant_data.append(entry)
+            print(participant_data)
     return participant_columns,participant_data
     
 

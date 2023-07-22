@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Minute Level Data</title>
     <link rel="stylesheet" href="../static/stylesheets/dashboard.css" />
-    <script src="../static/js/minute_level.js"></script>
+    <script src="../static/js/minute_level.js" defer></script>
   </head>
   <body>
+    <p>{{hello}}</p>
     <ul>
       <li>
         <a href="/#home">Home</a>
@@ -15,9 +16,12 @@
       <li>
         <a href="/dashboard">Dashboard</a>
       </li>
+      <li>
+        <a href="/minute_level">Minute Level Data</a>
+      </li>
     </ul>
     <h1 id="title">Minute Level Data</h1>
-    <form action="/minute_level" method="post">
+    <form id="form">
       <label for="participants">Participants:</label>
       <select name="participants" id="participants">
         <option value="all">All</option>

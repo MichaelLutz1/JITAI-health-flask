@@ -73,18 +73,18 @@ def stats_summ():
 def minute_level_page():
     participants = get_participants()
     if request.method == 'POST':
-        requested_participants = request.form["participants"]
-        start_date = request.form["start_date"]
-        end_date = request.form["end_date"]
+        data = request.json
+        requested_participants = data.get("participant")
+        start_date = data.get("start_date")
+        end_date = data.get("end_date")
         if requested_participants == 'all':
             requested_participants = [participant for participant in participants]
         else:
             requested_participants = [requested_participants]
-
+        
         participant_columns, participant_data = minute_level_data(
             requested_participants, start_date, end_date)
-
-        return render_template('minute_level.html',participants=participants, participant_columns=participant_columns, participant_data=participant_data)
+        return render_template('dashboard_table.html', participant_columns=participant_columns, participant_data=participant_data)
     return render_template('minute_level.html', participants=participants)
 
 
@@ -97,6 +97,7 @@ def MPAS_page():
             content = request.json
             import process_data
             process_data.process_participant_data(content)
+            process_data.process_minute_level(content)
             return "OK"
         except:
             print("Error", request.data)

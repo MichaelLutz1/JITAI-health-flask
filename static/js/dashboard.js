@@ -39,8 +39,7 @@ async function displayParticipants(participantJson) {
     const row = tableBody.insertRow();
     const headers = document.getElementsByTagName("th");
     for (const key in info) {
-      console.log(info["Participant ID"].innerText.toLowerCase());
-      const id = info["Participant ID"].innerText.toLowerCase();
+      const id = info["Participant ID"].innerText;
       const cell = row.insertCell();
       for (const header of headers) {
         if (header.textContent === key) {
@@ -60,10 +59,13 @@ function addEventListeners() {
   const minuteButtons = document.querySelectorAll(".minute-level-data");
   minuteButtons.forEach((button) => {
     const id = button.id.split("-")[0];
-    console.log("hehe");
     button.addEventListener("click", () => {
-      const csv = convertSingleParticipantJSONtoCSV(data[id]);
-      downloadCsv(id, csv);
+      const csv = convertSingleParticipantJSONtoCSV(data[id.toLowerCase()]);
+      // downloadCsv(id, csv);
+      const participantId = button.id.split("-", 1)[0];
+      const URLdata = { id: participantId };
+      const query = new URLSearchParams(URLdata).toString();
+      window.location.href = "/minute_level?" + query;
     });
   });
 
@@ -72,7 +74,6 @@ function addEventListeners() {
   ageElements.forEach((ele) => {
     const id = ele.id.split("-")[0];
     ele.addEventListener("change", (e) => {
-      console.log("hello");
       calculateHeartRate(id, e);
     });
   });
@@ -81,7 +82,7 @@ function addEventListeners() {
   const weightElements = document.querySelectorAll(".weight");
   weightElements.forEach((ele) => {
     const elementId = ele.id;
-    ele.addEventListener("change", () => console.log("hello"));
+    ele.addEventListener("change", () => console.log("weight changed"));
   });
 }
 
@@ -114,7 +115,6 @@ async function getCurrentWeather(id) {
   lat = parseFloat(lat);
   const pointResponse = await fetch(`https://api.weather.gov/points/${long},${lat}`);
   const pointInfo = await pointResponse.json();
-  // console.log(pointInfo);
   const foreCastLink = pointInfo.properties.forecastHourly;
   const weatherResponse = await fetch(foreCastLink);
   const weatherData = await weatherResponse.json();

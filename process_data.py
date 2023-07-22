@@ -1,4 +1,5 @@
 import database_access
+import data_calculations
 from pymongo import MongoClient
 
 
@@ -29,3 +30,21 @@ def process_participant_data(data_arr):
         for key in data:
             data[key] = is_nullish(data[key])
         database_access.write_participant_data(data)
+
+def process_minute_level(data_arr):
+    for data in data_arr:
+        processed_data = perform_calculations(data)
+        database_access.write_participant_processed_data(processed_data)
+    
+def perform_calculations(data):
+    for key in data:
+        data[key] = is_nullish(data[key])
+
+    processed_data = {}
+    processed_data['participantid'] = data['participantid']
+    processed_data['time'] = data['time']
+    processed_data["vector magnitude"] = data_calculations.calcVM(data['acceleration'])
+    processed_data['ENMO'] = data_calculations.calcENMO(processed_data['vector magnitude'])
+    return processed_data
+
+

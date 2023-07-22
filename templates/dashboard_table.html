@@ -1,0 +1,17 @@
+<table>
+  <tr>
+    {% for item in participant_columns%}
+    <th>{{ item }}</th>
+    {% endfor %}
+  </tr>
+
+  {% for entry in participant_data %}
+  <tr>
+    {% for header in participant_columns %}
+
+    <td>{{ entry[header] }}</td>
+
+    {% endfor %}
+  </tr>
+  {% endfor %}
+</table>

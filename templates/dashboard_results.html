@@ -28,8 +28,8 @@
         <th>{{ item }}</th>
         {% endfor %}
       </tr>
-      {# here we iterate over every item in our list which we will pass from
-      bar() #} {% for row in participant_data %}
+      {# here we iterate over every item in our list which we will pass from bar() #} {% for row in
+      participant_data %}
       <tr>
         {% for cell in row %} {%if cell == "True"%} {%if loop.index == 13%}
         <td style="background-color: red">{{ cell }}</td>

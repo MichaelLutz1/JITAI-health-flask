@@ -39,29 +39,46 @@ def dashboard():
     participants = get_participants()
     return render_template('dashboard.html', participants=participants)
 
+@app.route('/ageweight', methods=['GET', 'POST'])
+def ageweight():
+    if request.method == "GET":
+        try:
+            ageweight_list = get_age_weight()
+            return ageweight_list
+        except:
+            print('error')
+    if request.method == 'POST':
+        try:
+            body = request.json
+            write_age_weight(body)
+            return 'success'
+        except:
+            print('error', request.data)
+
+
 
 @app.route('/dashboardapi', methods=['GET', 'POST'])
 def dashboardapi():
     if request.method == 'GET':
-        data = request_dashboard_data()
+        data = request_all_data()
         json_data = jsonify(data)
         return json_data
 
 
-@app.route('/dashboard', methods=['POST', 'GET'])
-def stats_summ():
-    participants = get_participants()
-    if request.method == "POST":
+# @app.route('/dashboard', methods=['POST', 'GET'])
+# def stats_summ():
+#     participants = get_participants()
+#     if request.method == "POST":
 
-        requested_id = request.form["participants"]
-        start_date = request.form["start_date"]
-        end_date = request.form["end_date"]
+#         requested_id = request.form["participants"]
+#         start_date = request.form["start_date"]
+#         end_date = request.form["end_date"]
 
-        participant_data = request_dashboard_data(
-            requested_id, start_date, end_date)
-        return render_template('dashboard_results.html', data=participants, participant_data=participant_data)
-    else:
-        return render_template('dashboard_results.html', data=participants)
+#         participant_data = request_dashboard_data(
+#             requested_id, start_date, end_date)
+#         return render_template('dashboard_results.html', data=participants, participant_data=participant_data)
+#     else:
+#         return render_template('dashboard_results.html', data=participants)
 
 
 # @app.route('/dashboard')
@@ -84,6 +101,7 @@ def minute_level_page():
         
         participant_columns, participant_data = minute_level_data(
             requested_participants, start_date, end_date)
+        participant_columns = ['participantid', 'time', 'vectormagnitude', 'enmo']
         return render_template('dashboard_table.html', participant_columns=participant_columns, participant_data=participant_data)
     return render_template('minute_level.html', participants=participants)
 

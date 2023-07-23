@@ -25,11 +25,24 @@ def write_participant_processed_data(data):
     collection = get_db()[database_name]["Processed"][data["participantid"]]
     collection.insert_one(data)
 
+def write_age_weight(data):
+    if data["participantid"] == "" or data["participantid"] == None:
+        logger.error("No participant id")
+        return
+    collection = get_db()[database_name]["AGEWEIGHT"]
+    filter = {'participantid': data['participantid']}
+    new_age = {"$set": {data['type']: data['data']}}
+    collection.update_one(filter, new_age, upsert=True)
 
 def get_participants():
     db = get_db()
     collections = db.list_collection_names()
-    return set(c.split('.')[-1] for c in collections)
+    participants = set()
+    for c in collections:
+        name = c.split('.')[-1]
+        if name != 'AGEWEIGHT':
+            participants.add(name)
+    return participants
 
 
 def get_db():
@@ -96,7 +109,7 @@ def get_participant_details(number):
     return name, number, participant_id, socket
 
 
-def request_dashboard_data():
+def request_all_data():
     db = get_db()
     response = {}
     participants = get_participants()
@@ -129,9 +142,13 @@ def minute_level_data(requested_participants, start_date, end_date):
             all_entries_in_timeframe = list(collection.find(query,{'_id':0}))
             for entry in all_entries_in_timeframe:
                 participant_data.append(entry)
-            print(participant_data)
     return participant_columns,participant_data
     
+def get_age_weight():
+    db = get_db()
+    collection = db[database_name]["AGEWEIGHT"]
+    data = list(collection.find({}, {'_id':0}))
+    return data
 
 
 

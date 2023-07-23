@@ -43,8 +43,11 @@ def perform_calculations(data):
     processed_data = {}
     processed_data['participantid'] = data['participantid']
     processed_data['time'] = data['time']
-    processed_data["vector magnitude"] = data_calculations.calcVM(data['acceleration'])
-    processed_data['ENMO'] = data_calculations.calcENMO(processed_data['vector magnitude'])
+    processed_data["vectormagnitude"] = data_calculations.calcVM(data['acceleration'])
+    processed_data['enmo'] = data_calculations.calcENMO(processed_data['vectormagnitude'])
     return processed_data
+
+def process_age_weight(data):
+    pass
 
 

@@ -31,8 +31,8 @@ def write_age_weight(data):
         return
     collection = get_db()[database_name]["AGEWEIGHT"]
     filter = {'participantid': data['participantid']}
-    new_age = {"$set": {data['type']: data['data']}}
-    collection.update_one(filter, new_age, upsert=True)
+    new_data = {"$set": {data['type']: data['data']}}
+    collection.update_one(filter, new_data, upsert=True)
 
 def get_participants():
     db = get_db()
@@ -109,16 +109,34 @@ def get_participant_details(number):
     return name, number, participant_id, socket
 
 
-def request_all_data():
+
+def request_dashboard_data():
     db = get_db()
     response = {}
     participants = get_participants()
     for participant in participants:
         collection = db[database_name][participant]
-        data = list(collection.find())
-        for item in data:
-            item['_id'] = str(item['_id'])
-        response[participant.lower()] = data
+        pipeline = [
+        {
+            "$group": {
+                "_id": None,
+                "most_recent_date": { "$max": "$time" },
+                "earliest_date": { "$min": "$time" },
+            }
+        },
+        {
+            "$project": {
+                "_id": 0,
+                "most_recent_date": 1,
+                "earliest_date": 1,
+            }
+        }
+    ]
+        data = next(collection.aggregate(pipeline),None)
+        latest_date = data['most_recent_date'] 
+        latest_collection = collection.find_one({'time':latest_date})
+        data['location'] = latest_collection['location']
+        response[participant] = data
     return response
 
 
@@ -147,8 +165,13 @@ def minute_level_data(requested_participants, start_date, end_date):
 def get_age_weight():
     db = get_db()
     collection = db[database_name]["AGEWEIGHT"]
-    data = list(collection.find({}, {'_id':0}))
-    return data
+    participants = get_participants()
+    res = {}
+    for participant in participants:
+        data = next(collection.find({'participantid': participant}, {'_id':0, 'participantid':0}),0)
+        if data:
+            res[participant] = data
+    return res
 
 
 

@@ -37,6 +37,8 @@ def home():
 @app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
     participants = get_participants()
+    if request.method == 'POST':
+        return render_template('main_table.html', participants = participants)
     return render_template('dashboard.html', participants=participants)
 
 @app.route('/ageweight', methods=['GET', 'POST'])
@@ -60,7 +62,7 @@ def ageweight():
 @app.route('/dashboardapi', methods=['GET', 'POST'])
 def dashboardapi():
     if request.method == 'GET':
-        data = request_all_data()
+        data = request_dashboard_data()
         json_data = jsonify(data)
         return json_data
 

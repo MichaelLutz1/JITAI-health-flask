@@ -25,19 +25,18 @@ async function updateTable(id, start = undefined, end = undefined) {
   const res = await fetch("/minute_level", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      participant: id,
-      start_date: start,
-      end_date: end,
-    }),
+    body: JSON.stringify({ participant: id, start_date: start, end_date: end }),
   });
   const data = await res.text();
+  const dataContainer = document.querySelector("#data-container");
+  dataContainer.innerHTML = data;
   const tableContainer = document.querySelector("#table-container");
-  tableContainer.innerHTML = data;
   const button = tableContainer.querySelector("button");
   button.addEventListener("click", () => {
     downloadCsv(id);
   });
+  const firstHeader = document.querySelector("tbody > tr > th");
+  firstHeader.innerText = "Participant Id";
 }
 function downloadCsv(id) {
   const csvString = getCsvString();

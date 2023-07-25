@@ -47,7 +47,5 @@ def perform_calculations(data):
     processed_data['enmo'] = data_calculations.calcENMO(processed_data['vectormagnitude'])
     return processed_data
 
-def process_age_weight(data):
-    pass
 
 

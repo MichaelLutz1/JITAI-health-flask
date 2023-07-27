@@ -5,67 +5,69 @@
     <link rel="stylesheet" href="../static/stylesheets/dashboard.css" />
   </head>
   <body>
-    <nav class="sidebar">
-      <div class="logo">
-        MPAS
-        <div class="divider"></div>
-      </div>
-      <ul class="pages">
-        <li>
-          <a href="/#home" class="nav-item">
-            <div class="icon">
-              <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512">
-                <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                <path
-                  d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H456c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1H416 392c-22.1 0-40-17.9-40-40V448 384c0-17.7-14.3-32-32-32H256c-17.7 0-32 14.3-32 32v64 24c0 22.1-17.9 40-40 40H160 128.1c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9 .1-2.8V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z"
-                />
-              </svg>
-            </div>
-            <div class="page">Home</div>
-          </a>
-        </li>
-        <li>
-          <a href="/dashboard" class="nav-item active">
-            <div class="icon">
-              <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
-                <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                <path
-                  d="M64 64c0-17.7-14.3-32-32-32S0 46.3 0 64V400c0 44.2 35.8 80 80 80H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H80c-8.8 0-16-7.2-16-16V64zm406.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L320 210.7l-57.4-57.4c-12.5-12.5-32.8-12.5-45.3 0l-112 112c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L240 221.3l57.4 57.4c12.5 12.5 32.8 12.5 45.3 0l128-128z"
-                />
-              </svg>
-            </div>
-            <div class="page">Dashboard</div>
-          </a>
-        </li>
-        <li>
-          <a href="/minute_level" class="nav-item">
-            <div class="icon">
-              <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
-                <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                <path
-                  d="M160 80c0-26.5 21.5-48 48-48h32c26.5 0 48 21.5 48 48V432c0 26.5-21.5 48-48 48H208c-26.5 0-48-21.5-48-48V80zM0 272c0-26.5 21.5-48 48-48H80c26.5 0 48 21.5 48 48V432c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V272zM368 96h32c26.5 0 48 21.5 48 48V432c0 26.5-21.5 48-48 48H368c-26.5 0-48-21.5-48-48V144c0-26.5 21.5-48 48-48z"
-                />
-              </svg>
-            </div>
-            <div class="page">Minute Level Data</div>
-          </a>
-        </li>
-      </ul>
-    </nav>
     <main>
-      <div class="page-name">MPAS <span> / Dashboard</span></div>
-      <div id="dashboard-table-container">
-        <div class="table-name">
-          <div>Participants</div>
-          <select id="participant-dropdown" name="participants">
-            <option value="all">ALL</option>
-            {%for item in participants%}
-            <option value="{{item}}">{{item}}</option>
-            {% endfor %}
-          </select>
+      <nav class="sidebar">
+        <div class="logo">
+          MPAS
+          <div class="divider"></div>
         </div>
-        <div id="data-container"></div>
-      </div>
+        <ul class="pages">
+          <li>
+            <a href="/#home" class="nav-item">
+              <div class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512">
+                  <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                  <path
+                    d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H456c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1H416 392c-22.1 0-40-17.9-40-40V448 384c0-17.7-14.3-32-32-32H256c-17.7 0-32 14.3-32 32v64 24c0 22.1-17.9 40-40 40H160 128.1c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9 .1-2.8V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z"
+                  />
+                </svg>
+              </div>
+              <div class="page">Home</div>
+            </a>
+          </li>
+          <li>
+            <a href="/dashboard" class="nav-item active">
+              <div class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
+                  <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                  <path
+                    d="M64 64c0-17.7-14.3-32-32-32S0 46.3 0 64V400c0 44.2 35.8 80 80 80H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H80c-8.8 0-16-7.2-16-16V64zm406.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L320 210.7l-57.4-57.4c-12.5-12.5-32.8-12.5-45.3 0l-112 112c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L240 221.3l57.4 57.4c12.5 12.5 32.8 12.5 45.3 0l128-128z"
+                  />
+                </svg>
+              </div>
+              <div class="page">Dashboard</div>
+            </a>
+          </li>
+          <li>
+            <a href="/minute_level" class="nav-item">
+              <div class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                  <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                  <path
+                    d="M160 80c0-26.5 21.5-48 48-48h32c26.5 0 48 21.5 48 48V432c0 26.5-21.5 48-48 48H208c-26.5 0-48-21.5-48-48V80zM0 272c0-26.5 21.5-48 48-48H80c26.5 0 48 21.5 48 48V432c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V272zM368 96h32c26.5 0 48 21.5 48 48V432c0 26.5-21.5 48-48 48H368c-26.5 0-48-21.5-48-48V144c0-26.5 21.5-48 48-48z"
+                  />
+                </svg>
+              </div>
+              <div class="page">Minute Level Data</div>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <section>
+        <div class="page-name">MPAS <span> / Dashboard</span></div>
+        <div id="dashboard-table-container">
+          <div class="table-name">
+            <div>Participants</div>
+            <select id="participant-dropdown" name="participants">
+              <option value="all">ALL</option>
+              {%for item in participants%}
+              <option value="{{item}}">{{item}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div id="data-container"></div>
+        </div>
+      </section>
     </main>
   </body>
 </html>

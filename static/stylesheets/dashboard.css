@@ -22,7 +22,7 @@ body {
   box-sizing: border-box;
   font-family: "Roboto", monospace;
 }
-main {
+section {
   height: 100%;
   margin-left: 12.5rem;
   margin-right: 1.5rem;
@@ -71,7 +71,7 @@ select {
 th,
 td {
   padding: 8px 8px 8px 8px;
-  text-align: left;
+  text-align: center;
   white-space: nowrap;
 }
 td {
@@ -174,6 +174,12 @@ button > svg {
 .vigorous {
   background-color: var(--vigorous);
 }
+.accelerometery,
+.gyroscope,
+.magnetometer {
+  border-left: 1px dashed #ddd;
+  border-right: 1px dashed #ddd;
+}
 
 .form-element {
   display: flex;
@@ -273,6 +279,9 @@ button > svg {
   font-size: 0.7rem;
   padding-left: 7px;
   white-space: nowrap;
+}
+.participantid {
+  text-align: left;
 }
 .nav-item:hover {
   background-color: #ffffff;

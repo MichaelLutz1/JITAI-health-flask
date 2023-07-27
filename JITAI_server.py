@@ -88,7 +88,6 @@ def dashboardapi():
 def minute_level_page():
     participants = get_participants()
     if request.method == 'POST':
-        column_order = ['participantid', 'Time', 'Heartrate','Accelerometery','Vector Magnitude', 'ENMO', 'Gyroscope', 'Magnetometer', 'Step Count', 'Active Energy', 'Resting Energy', 'Total Energy', 'Sitting Time']
         data = request.json
         requested_participants = data.get("participant")
         start_date = data.get("start_date")
@@ -98,10 +97,10 @@ def minute_level_page():
         else:
             requested_participants = [requested_participants]
         
-        participant_columns, participant_data = minute_level_data(
+        participant_data = minute_level_data(
             requested_participants, start_date, end_date)
-        participant_columns = column_order
-        return render_template('minute_table.html', participant_columns=participant_columns, participant_data=participant_data)
+        column_order = ['participantid', 'Time', 'Heartrate','Accelerometery','Vector Magnitude', 'ENMO', 'Gyroscope', 'Magnetometer', 'Step Count', 'Active Energy', 'Resting Energy', 'Total Energy', 'Sitting Time']
+        return render_template('minute_table.html', participant_columns=column_order, participant_data=participant_data)
     return render_template('minute_level.html', participants=participants)
 
 

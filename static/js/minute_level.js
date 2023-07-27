@@ -38,6 +38,27 @@ async function fetchAndUpdateTable(id, start = undefined, end = undefined) {
   const firstHeader = document.querySelector("thead > tr > th");
   firstHeader.innerText = "Participant Id";
   updateBehaviorColors();
+  formatXYZ();
+}
+function formatXYZ() {
+  const xyzs = document.querySelectorAll(".accelerometery, .gyroscope, .magnetometer");
+  xyzs.forEach((xyz) => {
+    const parent = xyz.parentNode;
+    const cl = xyz.className;
+    const vals = xyz.innerText.split(" ");
+    for (let i = 0; i < vals.length; i++) {
+      vals[i] = vals[i].split(":")[1];
+    }
+    const y = document.createElement("td");
+    const z = document.createElement("td");
+    y.classList.add(cl);
+    z.classList.add(cl);
+    xyz.innerText = vals[0];
+    y.innerText = vals[1];
+    z.innerText = vals[2];
+    parent.insertBefore(y, xyz.nextSibling);
+    parent.insertBefore(z, y.nextSibling);
+  });
 }
 function updateBehaviorColors() {
   const enmos = document.querySelectorAll(".enmo");

@@ -142,7 +142,6 @@ def request_dashboard_data():
 
 def minute_level_data(requested_participants, start_date, end_date):
     db = get_db()
-    participant_columns = set()
     participant_data = []
     start_default, end_default = str(datetime(1900,1,1)),str(datetime(9999,12,31))
     query = {
@@ -155,12 +154,10 @@ def minute_level_data(requested_participants, start_date, end_date):
         collection = db[database_name]["Processed"][requested_participant]
         if not collection.count_documents({}) == 0:
             first_entry = list(collection.find_one({}, {'_id':0}))
-            for key in first_entry:
-                participant_columns.add(key)
             all_entries_in_timeframe = list(collection.find(query,{'_id':0}))
             for entry in all_entries_in_timeframe:
                 participant_data.append(entry)
-    return participant_columns,participant_data
+    return participant_data
     
 def get_input_data():
     db = get_db()

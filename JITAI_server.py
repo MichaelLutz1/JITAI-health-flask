@@ -41,18 +41,18 @@ def dashboard():
         return render_template('main_table.html', participants = participants)
     return render_template('dashboard.html', participants=participants)
 
-@app.route('/ageweight', methods=['GET', 'POST'])
-def ageweight():
+@app.route('/inputdata', methods=['GET', 'POST'])
+def inputdata():
     if request.method == "GET":
         try:
-            ageweight_list = get_age_weight()
-            return ageweight_list
+            inputdata_list = get_input_data()
+            return inputdata_list
         except:
             print('error')
     if request.method == 'POST':
         try:
             body = request.json
-            write_age_weight(body)
+            write_input_data(body)
             return 'success'
         except:
             print('error', request.data)
@@ -83,15 +83,12 @@ def dashboardapi():
 #         return render_template('dashboard_results.html', data=participants)
 
 
-# @app.route('/dashboard')
-# def dashboard():
-
-#     return render_template('dashboard.html', data=participant_id_list)
 
 @app.route('/minute_level', methods=['POST', 'GET'])
 def minute_level_page():
     participants = get_participants()
     if request.method == 'POST':
+        column_order = ['participantid', 'Time', 'Heartrate','Accelerometery','Vector Magnitude', 'ENMO', 'Gyroscope', 'Magnetometer', 'Step Count', 'Active Energy', 'Resting Energy', 'Total Energy', 'Sitting Time']
         data = request.json
         requested_participants = data.get("participant")
         start_date = data.get("start_date")
@@ -103,8 +100,8 @@ def minute_level_page():
         
         participant_columns, participant_data = minute_level_data(
             requested_participants, start_date, end_date)
-        participant_columns = ['participantid', 'time', 'vectormagnitude', 'enmo']
-        return render_template('dashboard_table.html', participant_columns=participant_columns, participant_data=participant_data)
+        participant_columns = column_order
+        return render_template('minute_table.html', participant_columns=participant_columns, participant_data=participant_data)
     return render_template('minute_level.html', participants=participants)
 
 
@@ -115,9 +112,10 @@ def MPAS_page():
     if request.method == "POST":
         try:
             content = request.json
+            input_data = get_input_data()
             import process_data
             process_data.process_participant_data(content)
-            process_data.process_minute_level(content)
+            process_data.process_minute_level(content, input_data)
             return "OK"
         except:
             print("Error", request.data)

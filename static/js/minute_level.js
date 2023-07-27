@@ -7,9 +7,14 @@ window.onload = () => {
   if (!id) {
     id = "all";
   }
-  updateTable(id);
+  fetchAndUpdateTable(id);
   const participantDropdown = document.querySelector("#participants");
   participantDropdown.value = id;
+  const tableContainer = document.querySelector("#table-container");
+  const button = tableContainer.querySelector("button");
+  button.addEventListener("click", () => {
+    downloadCsv();
+  });
 };
 
 form.addEventListener("submit", (e) => {
@@ -18,10 +23,10 @@ form.addEventListener("submit", (e) => {
   const participant = form.querySelector("#participants").value;
   const startDate = form.querySelector("#start_date").value;
   const endDate = form.querySelector("#end_date").value;
-  updateTable(participant, startDate, endDate);
+  fetchAndUpdateTable(participant, startDate, endDate);
 });
 
-async function updateTable(id, start = undefined, end = undefined) {
+async function fetchAndUpdateTable(id, start = undefined, end = undefined) {
   const res = await fetch("/minute_level", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -30,15 +35,29 @@ async function updateTable(id, start = undefined, end = undefined) {
   const data = await res.text();
   const dataContainer = document.querySelector("#data-container");
   dataContainer.innerHTML = data;
-  const tableContainer = document.querySelector("#table-container");
-  const button = tableContainer.querySelector("button");
-  button.addEventListener("click", () => {
-    downloadCsv(id);
-  });
-  const firstHeader = document.querySelector("tbody > tr > th");
+  const firstHeader = document.querySelector("thead > tr > th");
   firstHeader.innerText = "Participant Id";
+  updateBehaviorColors();
 }
-function downloadCsv(id) {
+function updateBehaviorColors() {
+  const enmos = document.querySelectorAll(".enmo");
+  enmos.forEach((enmo) => {
+    const val = enmo.textContent;
+    if (val === "0") {
+      enmo.classList.add("zero");
+    } else if (val < 35.6) {
+      enmo.classList.add("sedintary");
+    } else if (val < 201.4) {
+      enmo.classList.add("light");
+    } else if (val < 707) {
+      enmo.classList.add("moderate");
+    } else {
+      enmo.classList.add("vigorous");
+    }
+  });
+}
+function downloadCsv() {
+  const id = document.querySelector("#participants").value;
   const csvString = getCsvString();
   const blob = new Blob([csvString], { type: "text/csv" });
   const link = document.createElement("a");
@@ -59,7 +78,7 @@ function getCsvString() {
   return rows
     .map((row) => {
       const cells = Array.from(row.querySelectorAll("th,td"));
-      return cells.map((cell) => cell.textContent).join(",");
+      return cells.map((cell) => cell.innerText).join(",");
     })
     .join("\n");
 }

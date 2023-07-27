@@ -1,0 +1,24 @@
+<html>
+  <table>
+    <thead>
+      <tr>
+        <!-- column_order = ['participantid', 'Time', 'Heartrate','Accelerometery','Vector Magnitude', 'ENMO', 'Gyroscope', 'Magnetometer', 'Step Count', 'Active Energy', 'Resting Energy', 'Total Energy', 'Sitting Time'] -->
+        {% for item in participant_columns%}
+        <th>{{ item }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+
+    {% for entry in participant_data %}
+    <tr>
+      {% for header in participant_columns %}
+
+      <td class="{{header|lower|replace(' ', '-')}} {% if entry[header] == 0 %}zero{% endif %}">
+        {{ entry[header] }}
+      </td>
+
+      {% endfor %}
+    </tr>
+    {% endfor %}
+  </table>
+</html>

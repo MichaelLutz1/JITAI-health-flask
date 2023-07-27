@@ -4,6 +4,11 @@
   --green: #4fd1c5;
   --grey: #a0aec0;
   --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --zero: lightgray;
+  --sedintary: rgb(101, 209, 245);
+  --light: rgb(95, 255, 47);
+  --moderate: rgb(255, 121, 68);
+  --vigorous: rgb(252, 51, 51);
 }
 html {
   background-color: var(--main-background);
@@ -18,12 +23,20 @@ body {
   font-family: "Roboto", monospace;
 }
 main {
+  height: 100%;
   margin-left: 12.5rem;
   margin-right: 1.5rem;
+  display: flex;
+  flex-direction: column;
 }
 table {
   border-collapse: collapse;
   padding: 10px;
+}
+thead {
+  position: sticky;
+  top: 0;
+  background-color: var(--main-background);
 }
 
 td > input {
@@ -71,33 +84,54 @@ th {
 button {
   padding: 5px 20px;
   background-color: var(--green);
-  border-radius: 10px;
+  border-radius: 6px;
   border: none;
   box-shadow: var(--shadow);
   color: white;
   transition: all 0.2s ease;
 }
 button:hover {
-  scale: 1.03;
+  scale: 1.07;
 }
 button > svg {
   padding-top: 2px;
   fill: white;
 }
 
-#participant-dropdown {
-  position: absolute;
-  right: 0;
-  margin-right: 10px;
-}
 #table-container {
-  overflow-x: auto;
+  height: 73vh;
   width: 100%;
   padding: 30px;
   padding-bottom: 10px;
   border-radius: 15px;
   background: white;
   box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+}
+#dashboard-table-container {
+  height: 85vh;
+  width: 100%;
+  padding: 30px;
+  padding-bottom: 10px;
+  border-radius: 15px;
+  background: white;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+}
+#data-container {
+  position: relative;
+  overflow-x: auto;
+  overflow-y: auto;
+  flex: 1;
+}
+#data-container > table {
+  min-height: 100%;
+  width: 100%;
+}
+#data-container > * {
+  font-size: 12px;
 }
 #form {
   margin-bottom: 20px;
@@ -105,18 +139,48 @@ button > svg {
   align-items: stretch;
   justify-content: space-around;
 }
-#data-container > table {
-  width: 100%;
+#key {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 1rem;
 }
-#data-container > * {
-  font-size: 12px;
+#key > * {
+  font-size: 10px;
+  font-weight: 300;
 }
+.key-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.key-color {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 100%;
+}
+.zero {
+  background-color: var(--zero) !important;
+}
+.sedintary {
+  background-color: var(--sedintary);
+}
+.light {
+  background-color: var(--light);
+}
+.moderate {
+  background-color: var(--moderate);
+}
+.vigorous {
+  background-color: var(--vigorous);
+}
+
 .form-element {
   display: flex;
   align-items: center;
   gap: 20px;
   background-color: white;
-  padding: 10px 15px;
+  padding: 7px 13px;
   border-radius: 7px;
   box-shadow: var(--shadow);
   font-size: 12px;
@@ -131,7 +195,8 @@ button > svg {
   display: none;
 }
 .minutelevel > button {
-  margin-left: 22px;
+  padding: 5px 8px;
+  margin-left: 33px;
 }
 .id {
   font-size: 16px;
@@ -141,6 +206,8 @@ button > svg {
   font-weight: 900;
   position: relative;
   padding-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
 }
 .page-name {
   margin: 20px 0;
@@ -181,11 +248,6 @@ button > svg {
   border: 1px solid var(--grey);
   border-radius: 100%;
   opacity: 50%;
-}
-.download-button {
-  position: absolute;
-  right: 0;
-  margin-right: 10px;
 }
 .nav-item {
   color: var(--grey);

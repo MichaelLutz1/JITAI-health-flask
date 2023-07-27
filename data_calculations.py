@@ -12,4 +12,4 @@ def calcENMO(vm):
     enmo = vm - g 
     if enmo < 0:
         return 0
-    return enmo
+    return round(enmo,3)

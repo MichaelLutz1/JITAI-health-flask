@@ -23,14 +23,14 @@ participantDropdown.addEventListener("change", (e) => {
 window.onpageshow = async () => {
   await renderTemplate();
   const data = await fetchDataOnLoad();
-  const ageweight = await getAgeWeight();
-  updateTable(data, ageweight);
+  const inputData = await getInputData();
+  updateTable(data, inputData);
 };
-function updateTable(data, ageweightData) {
+function updateTable(data, inputData) {
   const rows = document.querySelectorAll("tbody > tr");
   rows.forEach((row) => {
     const id = row.querySelector(".id").textContent;
-    updateAgeWeight(row, ageweightData, id);
+    updateInputData(row, inputData, id);
     updateStartEndDate(row, data, id);
     addEventListenerToButton(row, id);
     updateMaxHr(row);
@@ -75,7 +75,7 @@ function addEventListenerToButton(row, id) {
 function toggleActiveInput(e) {
   e.target.disabled = !e.target.disabled;
 }
-function updateAgeWeight(row, data, id) {
+function updateInputData(row, data, id) {
   const inputs = row.querySelectorAll(".age, .weight");
   inputs.forEach((input) => {
     input.addEventListener("dblclick", (e) => {
@@ -88,7 +88,7 @@ function updateAgeWeight(row, data, id) {
     if (e.keycode === 13 || e.which === 13) {
       const age = e.target.value;
       toggleActiveInput(e);
-      sendAgeWeight(id, age, "age");
+      sendInputData(id, age, "age");
       updateMaxHr(row);
     }
   });
@@ -96,7 +96,7 @@ function updateAgeWeight(row, data, id) {
     if (e.keycode === 13 || e.which === 13) {
       const weight = e.target.value;
       toggleActiveInput(e);
-      sendAgeWeight(id, weight, "weight");
+      sendInputData(id, weight, "weight");
     }
   });
   if (data[id]) {
@@ -136,15 +136,15 @@ async function fetchDataOnLoad() {
   const data = await fetchData.json();
   return data;
 }
-async function getAgeWeight() {
-  const res = await fetch("/ageweight", { method: "GET" });
+async function getInputData() {
+  const res = await fetch("/inputdata", { method: "GET" });
   const data = await res.json();
   return data;
 }
 
-async function sendAgeWeight(id, data, type) {
+async function sendInputData(id, data, type) {
   try {
-    const res = await fetch("/ageweight", {
+    const res = await fetch("/inputdata", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

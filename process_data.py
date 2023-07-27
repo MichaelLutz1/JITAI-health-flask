@@ -31,20 +31,30 @@ def process_participant_data(data_arr):
             data[key] = is_nullish(data[key])
         database_access.write_participant_data(data)
 
-def process_minute_level(data_arr):
+def process_minute_level(data_arr, input_data):
     for data in data_arr:
-        processed_data = perform_calculations(data)
+        processed_data = perform_calculations(data, input_data)
         database_access.write_participant_processed_data(processed_data)
     
-def perform_calculations(data):
+def perform_calculations(data, input_data):
     for key in data:
         data[key] = is_nullish(data[key])
 
+    print(input_data)
     processed_data = {}
     processed_data['participantid'] = data['participantid']
-    processed_data['time'] = data['time']
-    processed_data["vectormagnitude"] = data_calculations.calcVM(data['acceleration'])
-    processed_data['enmo'] = data_calculations.calcENMO(processed_data['vectormagnitude'])
+    processed_data['Time'] = data['time']
+    processed_data["Vector Magnitude"] = data_calculations.calcVM(data['acceleration'])
+    processed_data['ENMO'] = data_calculations.calcENMO(processed_data['Vector Magnitude'])
+    processed_data['Accelerometery'] = data['acceleration']
+    processed_data['Heartrate'] = data['heartrate']
+    processed_data['Gyroscope'] = data['gyro']
+    processed_data['Magnetometer'] = data['magnetometer']
+    processed_data['Step Count'] = data['stepcount']
+    processed_data['Active Energy'] = data['activeenergy']
+    processed_data['Resting Energy'] = data['restingenergy']
+    processed_data['Total Energy'] = data['restingenergy'] + data['activeenergy']
+    processed_data['Sitting Time'] = data['sittingtime']
     return processed_data
 
 

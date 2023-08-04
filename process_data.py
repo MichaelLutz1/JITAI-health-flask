@@ -18,44 +18,59 @@ data = {
     "participantid":""                      String
 }
 """
-#converts "nil", "", "nan" to None
+# converts "nil", "", "nan" to None
+
+
 def is_nullish(thing):
-    if thing=="nil" or thing=="" or thing=="nan":
+    if thing == "nil" or thing == "" or thing == "nan":
         return None
     return thing
 
-#data is an array of the above data struct
+# data is an array of the above data struct
+
+
 def process_participant_data(data_arr):
     for data in data_arr:
         for key in data:
             data[key] = is_nullish(data[key])
         database_access.write_participant_data(data)
 
+
 def process_minute_level(data_arr, input_data):
     for data in data_arr:
         processed_data = perform_calculations(data, input_data)
-        database_access.write_participant_processed_data(processed_data)
-    
-def perform_calculations(data, input_data):
+        database_access.write_participant_processed_data(
+            processed_data, 'MINUTE')
+
+
+def perform_calculations(data, input_data=None):
     for key in data:
         data[key] = is_nullish(data[key])
 
-    print(input_data)
     processed_data = {}
     processed_data['participantid'] = data['participantid']
     processed_data['Time'] = data['time']
-    processed_data["Vector Magnitude"] = data_calculations.calcVM(data['acceleration'])
-    processed_data['ENMO'] = data_calculations.calcENMO(processed_data['Vector Magnitude'])
+    processed_data["Vector Magnitude"] = data_calculations.calcVM(
+        data['acceleration'])
+    processed_data['ENMO'] = data_calculations.calcENMO(
+        processed_data['Vector Magnitude'])
     processed_data['Accelerometery'] = data['acceleration']
     processed_data['Heartrate'] = data['heartrate']
-    processed_data['Gyroscope'] = data['gyro']
-    processed_data['Magnetometer'] = data['magnetometer']
     processed_data['Step Count'] = data['stepcount']
     processed_data['Active Energy'] = data['activeenergy']
     processed_data['Resting Energy'] = data['restingenergy']
-    processed_data['Total Energy'] = data['restingenergy'] + data['activeenergy']
+    processed_data['Total Energy'] = round(data['restingenergy'] +
+                                           data['activeenergy'], 4)
     processed_data['Sitting Time'] = data['sittingtime']
     return processed_data
 
 
-
+def process_halfhour_level(data_arr):
+    import half_hour_averages
+    processed_data_arr = half_hour_averages.calc_halfhour_averages(
+        data_arr)
+    for data in processed_data_arr:
+        if data is not None:
+            processed_data = perform_calculations(data)
+            database_access.write_participant_processed_data(
+                processed_data, 'HALFHOUR')

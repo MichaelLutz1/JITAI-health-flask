@@ -79,7 +79,7 @@ function updateInputData(row, data, id) {
   const inputs = row.querySelectorAll(".age, .weight");
   inputs.forEach((input) => {
     input.addEventListener("dblclick", (e) => {
-      toggleActiveInput(e);
+      e.target.disabled = false
     });
   });
   const ageInput = row.querySelector(".age > input");

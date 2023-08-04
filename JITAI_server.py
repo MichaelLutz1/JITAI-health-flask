@@ -38,8 +38,9 @@ def home():
 def dashboard():
     participants = get_participants()
     if request.method == 'POST':
-        return render_template('main_table.html', participants = participants)
+        return render_template('main_table.html', participants=participants)
     return render_template('dashboard.html', participants=participants)
+
 
 @app.route('/inputdata', methods=['GET', 'POST'])
 def inputdata():
@@ -56,7 +57,6 @@ def inputdata():
             return 'success'
         except:
             print('error', request.data)
-
 
 
 @app.route('/dashboardapi', methods=['GET', 'POST'])
@@ -83,6 +83,27 @@ def dashboardapi():
 #         return render_template('dashboard_results.html', data=participants)
 
 
+@app.route('/halfhour_level', methods=['POST', 'GET'])
+def halfhour_level_page():
+    participants = get_participants()
+    if request.method == 'POST':
+        data = request.json
+        requested_participants = data.get("participant")
+        start_date = data.get("start_date")
+        end_date = data.get("end_date")
+        if requested_participants == 'all':
+            requested_participants = [
+                participant for participant in participants]
+        else:
+            requested_participants = [requested_participants]
+
+        participant_data = processed_data(
+            requested_participants, start_date, end_date, 'HALFHOUR')
+        column_order = ['participantid', 'Time', 'Heartrate', 'Accelerometery', 'Vector Magnitude',
+                        'ENMO', 'Step Count', 'Active Energy', 'Resting Energy', 'Total Energy', 'Sitting Time']
+        return render_template('minute_table.html', participant_columns=column_order, participant_data=participant_data)
+    return render_template('halfhour_level.html', participants=participants)
+
 
 @app.route('/minute_level', methods=['POST', 'GET'])
 def minute_level_page():
@@ -93,13 +114,14 @@ def minute_level_page():
         start_date = data.get("start_date")
         end_date = data.get("end_date")
         if requested_participants == 'all':
-            requested_participants = [participant for participant in participants]
+            requested_participants = [
+                participant for participant in participants]
         else:
             requested_participants = [requested_participants]
-        
-        participant_data = minute_level_data(
-            requested_participants, start_date, end_date)
-        column_order = ['participantid', 'Time', 'Heartrate','Accelerometery','Vector Magnitude', 'ENMO', 'Gyroscope', 'Magnetometer', 'Step Count', 'Active Energy', 'Resting Energy', 'Total Energy', 'Sitting Time']
+        participant_data = processed_data(
+            requested_participants, start_date, end_date, 'MINUTE')
+        column_order = ['participantid', 'Time', 'Heartrate', 'Accelerometery', 'Vector Magnitude',
+                        'ENMO', 'Step Count', 'Active Energy', 'Resting Energy', 'Total Energy', 'Sitting Time']
         return render_template('minute_table.html', participant_columns=column_order, participant_data=participant_data)
     return render_template('minute_level.html', participants=participants)
 
@@ -115,12 +137,12 @@ def MPAS_page():
             import process_data
             process_data.process_participant_data(content)
             process_data.process_minute_level(content, input_data)
+            process_data.process_halfhour_level(content)
             return "OK"
         except:
             print("Error", request.data)
     else:
         participants = get_participants()
-        print("participants: ", participants)
         return render_template("MPAS.html", participants=participants)
 
 

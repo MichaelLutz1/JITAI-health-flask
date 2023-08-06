@@ -16,6 +16,9 @@ html {
 body {
   height: 100vh;
 }
+svg{
+  display: block;
+}
 * {
   margin: 0;
   padding: 0;
@@ -199,9 +202,9 @@ button > svg {
 .none {
   display: none;
 }
-.minutelevel > button {
-  padding: 5px 8px;
-}
+/* .minutelevel > button { */
+/*   padding: 5px 8px; */
+/* } */
 .id {
   text-align: left;
   font-size: 16px;
@@ -213,6 +216,20 @@ button > svg {
   padding-bottom: 20px;
   display: flex;
   justify-content: space-between;
+}
+.arrows{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 5px;
+  gap: 7px;
+}
+.arrows p{
+  font-size: 12px;
+}
+.arrows div:hover{
+  cursor: pointer;
+  scale: 1.05;
 }
 .page-name {
   margin: 20px 0;

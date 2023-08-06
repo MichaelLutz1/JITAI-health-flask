@@ -1,0 +1,79 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap");
+:root {
+  --main-background: #f8f9fa;
+  --green: #4fd1c5;
+  --grey: #a0aec0;
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "roboto", monospace;
+}
+body{
+  height: 100vh;
+}
+main{
+  background: var(--main-background);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100%;
+  position: relative;
+}
+img{
+  width: 50%;
+}
+.banner{
+  background: var(--green);
+  margin: 1rem 0;
+  width: 95%;
+  height: 50%;
+  border-radius: 1rem;
+  display: flex;
+  justify-content: center;
+}
+.login{
+  background: white;
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 45%;
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem 0;
+  box-shadow: var(--shadow-md);
+}
+.title{
+  font-size: 2rem;
+  font-weight: 400;
+  padding-top: 2rem;
+  color: white;
+}
+.password{
+  border: 1px solid var(--grey);
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  width: 12rem;
+}
+.submit{
+  width: 12rem;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.5rem;
+  background: var(--green);
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+.submit:hover{
+  scale: 1.05;
+}

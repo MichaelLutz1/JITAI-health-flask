@@ -82,27 +82,39 @@ def dashboardapi():
 #     else:
 #         return render_template('dashboard_results.html', data=participants)
 
+@app.route('/api/processed_data')
+def all_processed_data():
+    db = get_db()
+    id = request.args['id']
+    path = request.args['path']
+    paths = {
+        'minute_level': 'MINUTE',
+        'halfhour_level': 'HALFHOUR'
+    }
+    collection = db[database_name]['PROCESSED'][paths[path]]
+    if id == 'all':
+        data_list = list(collection.find({}, {'_id': 0}))
+    else:
+        data_list = list(collection.find({'participantid': id}, {'_id': 0}))
+    data_json = json.dumps(data_list, default=str)
+    return data_json
+
 
 @app.route('/halfhour_level', methods=['POST', 'GET'])
 def halfhour_level_page():
     participants = get_participants()
     if request.method == 'POST':
         data = request.json
-        requested_participants = data.get("participant")
+        requested_participant = data.get("participant")
         start_date = data.get("start_date")
         end_date = data.get("end_date")
-        if requested_participants == 'all':
-            requested_participants = [
-                participant for participant in participants]
-        else:
-            requested_participants = [requested_participants]
-
-        participant_data = processed_data(
-            requested_participants, start_date, end_date, 'HALFHOUR')
+        offset = data.get('offset')
+        participant_data, num_rows = get_processed_data(
+            requested_participant, start_date, end_date, 'HALFHOUR', offset)
         column_order = ['participantid', 'Time', 'Heartrate', 'Accelerometery', 'Vector Magnitude',
                         'ENMO', 'Step Count', 'Active Energy', 'Resting Energy', 'Total Energy', 'Sitting Time']
-        return render_template('minute_table.html', participant_columns=column_order, participant_data=participant_data)
-    return render_template('halfhour_level.html', participants=participants)
+        return render_template('minute_table.html', participant_columns=column_order, participant_data=participant_data, num_rows=num_rows)
+    return render_template('halfhour_level.html', participants=participants, num_rows=0)
 
 
 @app.route('/minute_level', methods=['POST', 'GET'])
@@ -110,20 +122,16 @@ def minute_level_page():
     participants = get_participants()
     if request.method == 'POST':
         data = request.json
-        requested_participants = data.get("participant")
+        requested_participant = data.get("participant")
         start_date = data.get("start_date")
         end_date = data.get("end_date")
-        if requested_participants == 'all':
-            requested_participants = [
-                participant for participant in participants]
-        else:
-            requested_participants = [requested_participants]
-        participant_data = processed_data(
-            requested_participants, start_date, end_date, 'MINUTE')
+        offset = data.get('offset')
+        participant_data, num_rows = get_processed_data(
+            requested_participant, start_date, end_date, 'MINUTE', offset)
         column_order = ['participantid', 'Time', 'Heartrate', 'Accelerometery', 'Vector Magnitude',
                         'ENMO', 'Step Count', 'Active Energy', 'Resting Energy', 'Total Energy', 'Sitting Time']
-        return render_template('minute_table.html', participant_columns=column_order, participant_data=participant_data)
-    return render_template('minute_level.html', participants=participants)
+        return render_template('minute_table.html', participant_columns=column_order, participant_data=participant_data, num_rows=num_rows)
+    return render_template('minute_level.html', participants=participants, num_rows=0)
 
 
 @app.route("/MPAS", methods=["POST", "GET"])

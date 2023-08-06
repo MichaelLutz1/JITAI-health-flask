@@ -123,25 +123,58 @@ def request_dashboard_data():
     return response
 
 
-def processed_data(requested_participants, start_date, end_date, type):
+def get_processed_data(requested_participant, start_date, end_date, type, offset):
     db = get_db()
     participant_data = []
+    num_rows = 0
     start_default, end_default = str(
         datetime(1900, 1, 1)), str(datetime(9999, 12, 31))
-    for requested_participant in requested_participants:
+    collection = db[database_name]["PROCESSED"][type]
+    if requested_participant == 'all':
+        starting_id = collection.find({
+            'Time': {
+                '$gte': start_date if start_date else start_default,
+                '$lte': end_date if end_date else end_default
+            }
+        }).sort('_id', 1)
+        list_starting = starting_id
+        print(offset)
+        last_id = starting_id[offset]['_id']
         query = {
+            '_id': {
+                '$gte': last_id
+            },
+            'Time': {
+                '$gte': start_date if start_date else start_default,
+                '$lte': end_date if end_date else end_default
+            }
+        }
+    else:
+        starting_id = collection.find({
+            'participantid': requested_participant,
+            'Time': {
+                '$gte': start_date if start_date else start_default,
+                '$lte': end_date if end_date else end_default
+            }
+        }).sort('_id', 1)
+        last_id = starting_id[offset]['_id']
+        query = {
+            '_id': {
+                '$gte': last_id
+            },
             'participantid': requested_participant,
             'Time': {
                 '$gte': start_date if start_date else start_default,
                 '$lte': end_date if end_date else end_default
             }
         }
-        collection = db[database_name]["PROCESSED"][type]
-        if not collection.count_documents({}) == 0:
-            all_entries_in_timeframe = list(collection.find(query, {'_id': 0}))
-            for entry in all_entries_in_timeframe:
-                participant_data.append(entry)
-    return participant_data
+    if not collection.count_documents({}) == 0:
+        all_entries_in_timeframe = list(
+            collection.find(query).sort('_id', 1).limit(10))
+        num_rows += collection.count_documents(query)
+        for entry in all_entries_in_timeframe:
+            participant_data.append(entry)
+    return participant_data, num_rows
 
 
 def get_input_data():

@@ -1,70 +1,26 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <title>Home</title>
     <link rel="stylesheet" href="../static/stylesheets/index.css" />
   </head>
   <body>
     <main>
-      <nav class="sidebar">
-        <div class="logo">
-          MPAS
-          <div class="divider"></div>
-        </div>
-        <ul class="pages">
-          <li>
-            <a href="/#home" class="nav-item">
-              <div class="icon">
-                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512">
-                  <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                  <path
-                    d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H456c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1H416 392c-22.1 0-40-17.9-40-40V448 384c0-17.7-14.3-32-32-32H256c-17.7 0-32 14.3-32 32v64 24c0 22.1-17.9 40-40 40H160 128.1c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9 .1-2.8V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z"
-                  />
-                </svg>
-              </div>
-              <div class="page">Home</div>
-            </a>
-          </li>
-          <li>
-            <a href="/dashboard" class="nav-item active">
-              <div class="icon">
-                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
-                  <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                  <path
-                    d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z"
-                  />
-                </svg>
-              </div>
-              <div class="page">Dashboard</div>
-            </a>
-          </li>
-          <li>
-            <a href="/minute_level" class="nav-item">
-              <div class="icon">
-                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
-                  <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                  <path
-                    d="M160 80c0-26.5 21.5-48 48-48h32c26.5 0 48 21.5 48 48V432c0 26.5-21.5 48-48 48H208c-26.5 0-48-21.5-48-48V80zM0 272c0-26.5 21.5-48 48-48H80c26.5 0 48 21.5 48 48V432c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V272zM368 96h32c26.5 0 48 21.5 48 48V432c0 26.5-21.5 48-48 48H368c-26.5 0-48-21.5-48-48V144c0-26.5 21.5-48 48-48z"
-                  />
-                </svg>
-              </div>
-              <div class="page">Minute-Level Data</div>
-            </a>
-          </li>
-          <li>
-            <a href="/halfhour_level" class="nav-item">
-              <div class="icon">
-                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
-                  <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                  <path
-                    d="M32 32c17.7 0 32 14.3 32 32V400c0 8.8 7.2 16 16 16H480c17.7 0 32 14.3 32 32s-14.3 32-32 32H80c-44.2 0-80-35.8-80-80V64C0 46.3 14.3 32 32 32zM160 224c17.7 0 32 14.3 32 32v64c0 17.7-14.3 32-32 32s-32-14.3-32-32V256c0-17.7 14.3-32 32-32zm128-64V320c0 17.7-14.3 32-32 32s-32-14.3-32-32V160c0-17.7 14.3-32 32-32s32 14.3 32 32zm64 32c17.7 0 32 14.3 32 32v96c0 17.7-14.3 32-32 32s-32-14.3-32-32V224c0-17.7 14.3-32 32-32zM480 96V320c0 17.7-14.3 32-32 32s-32-14.3-32-32V96c0-17.7 14.3-32 32-32s32 14.3 32 32z"
-                  />
-                </svg>
-              </div>
-              <div class="page">Half-Hour Data</div>
-            </a>
-          </li>
-        </ul>
-      </nav>
+      <div class="banner">
+        <p class="title">MPAS DASHBOARD</p>
+      </div>
+      <div class="login">
+          <img src="../static/images/Walkitlogitlogo.png" alt="Walk it log it logo">
+          <input type="password" name="password" placeholder="Password" class="password"/>
+          <input type="submit" value="Submit" class="submit"/>
+      </div>
     </main>
   </body>
+    <script>
+      console.log('hello');
+      const button = document.querySelector('.submit');
+      button.addEventListener('click', () => {
+        window.location.href = '/dashboard'
+      });
+    </script>
 </html>

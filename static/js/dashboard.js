@@ -65,11 +65,14 @@ async function displayWeather(row, data, id) {
   }
 }
 function addEventListenerToButton(row, id) {
-  const button = row.querySelector(".minutelevel > button");
-  button.addEventListener("click", () => {
-    const URLdata = { id: id };
-    const query = new URLSearchParams(URLdata).toString();
-    window.location.href = "/minute_level?" + query;
+  const buttons = row.querySelectorAll(".minute_level button, .halfhour_level button");
+  buttons.forEach(button => {
+    button.addEventListener("click", () => {
+      const type = button.parentNode.className
+      const URLdata = { id: id };
+      const query = new URLSearchParams(URLdata).toString();
+      window.location.href = `/${type}?` + query;
+    });
   });
 }
 function toggleActiveInput(e) {
@@ -153,7 +156,6 @@ async function sendInputData(id, data, type) {
         data: data,
       }),
     });
-    console.log(res);
   } catch (error) {
     console.log("error", error);
   }

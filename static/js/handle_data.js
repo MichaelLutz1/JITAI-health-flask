@@ -35,7 +35,7 @@ function changeOffset(amount) {
     offset = 0
     return
   }
-  if (offset > numRows.innerText) {
+  if (offset >= numRows.innerText) {
     offset -= amount
     return
   }
@@ -74,14 +74,42 @@ async function fetchAndUpdateTable(id, start = undefined, end = undefined, shoul
     firstHeader.innerText = "Participant Id";
     if (shouldReloadNumRows) {
       const numRows = dataContainer.querySelector('.num-rows').innerText;
-      const numPages = document.querySelector('.num-pages')
-      numPages.innerText = Math.floor(numRows / 10) + 1
+      const numPagesElement = document.querySelector('.num-pages')
+      const overflow = numRows % 10
+      const numPages = Math.floor(numRows / 10)
+      numPagesElement.innerText = numPages + (overflow > 0 ? 1 : 0)
+      page = 1
+      const pageNumber = document.querySelector('.curr-page');
+      pageNumber.innerText = page
     }
   } catch (error) {
     console.log("Error: ", error);
   }
   // countData();
+  formatXYZ();
 }
+
+function formatXYZ() {
+  const xyzs = document.querySelectorAll(".accelerometery");
+  xyzs.forEach((xyz) => {
+    const parent = xyz.parentNode;
+    const cl = xyz.className;
+    const vals = xyz.innerText.split(" ");
+    for (let i = 0; i < vals.length; i++) {
+      vals[i] = vals[i].split(":")[1];
+    }
+    const y = document.createElement("td");
+    const z = document.createElement("td");
+    y.classList.add(cl);
+    z.classList.add(cl);
+    xyz.innerText = vals[0];
+    y.innerText = vals[1];
+    z.innerText = vals[2];
+    parent.insertBefore(y, xyz.nextSibling);
+    parent.insertBefore(z, y.nextSibling);
+  });
+}
+
 function countData() {
   const enmos = document.querySelectorAll(".enmo");
   let count = 0
@@ -111,7 +139,12 @@ async function getCsvString(id) {
   headers = Object.keys(data[0])
   rows.push(headers.join(','))
   data.forEach(obj => {
-    const values = headers.map(header => obj[header]);
+    const values = headers.map(header => {
+      if (header === 'weather' && obj[header]) {
+        return 'Temp: ' + obj[header]['temp'] + ' Precipitation: ' + obj[header]['precipitation'] + ' Wind: ' + obj[header]['wind'] + ' Humidity: ' + obj[header]['humidity']
+      }
+      return obj[header]
+    });
     rows.push(values.join(','));
   });
   return rows.join('\n')

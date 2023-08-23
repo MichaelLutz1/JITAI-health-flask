@@ -1,3 +1,4 @@
+import requests
 from datetime import datetime, timedelta
 
 
@@ -66,7 +67,30 @@ def average_data(data_arr, curr, end):
                     count = 1
     if count < 28:
         return None
-    return divide_by_count(id, halfhour_average, count, curr, end)
+    averaged_data = divide_by_count(id, halfhour_average, count, curr, end)
+    averaged_data['weather'] = get_weather(averaged_data['location'])
+
+    return averaged_data
+
+
+def get_weather(location):
+    long, lat = location.split(' ')
+    weather = {}
+    try:
+        r = requests.get(f'https://api.weather.gov/points/{long},{lat}')
+        point_info = r.json()
+        forecast_link = point_info['properties']['forecastHourly']
+        r = requests.get(forecast_link)
+        weather_data = r.json()
+        weather['temp'] = weather_data['properties']['periods'][0]['temperature']
+        weather['precipitation'] = weather_data['properties']['periods'][0]['probabilityOfPrecipitation']['value']
+        weather['wind'] = weather_data['properties']['periods'][0]['windSpeed']
+        weather['humidity'] = weather_data['properties']['periods'][0]['relativeHumidity']['value']
+        return weather
+    except:
+        print('error')
+        return None
+    return None
 
 
 def divide_by_count(id, halfhour_average, count, curr, end):
@@ -74,6 +98,9 @@ def divide_by_count(id, halfhour_average, count, curr, end):
     for key, val in halfhour_average.items():
         match key:
             case '_id':
+                continue
+            case 'weather':
+                processed_averages[key] = val
                 continue
             case 'acceleration':
                 processed_averages[key] = rebuild_xyz(val, count)
@@ -141,7 +168,7 @@ def sum_long_lat(initial_val, new_val):
         old_long = initial_val[0]
         old_lat = initial_val[1]
     except:
-        print('eroor')
+        print('error')
     return [old_long + new_long, old_lat + new_lat]
 
 

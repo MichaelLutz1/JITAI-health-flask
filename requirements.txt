@@ -10,5 +10,6 @@ nokia
 asyncio
 transitions
 matplotlib
+requests
 
 

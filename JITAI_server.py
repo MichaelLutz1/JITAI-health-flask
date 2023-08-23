@@ -112,8 +112,8 @@ def halfhour_level_page():
         participant_data, num_rows = get_processed_data(
             requested_participant, start_date, end_date, 'HALFHOUR', offset)
         column_order = ['participantid', 'Time', 'Heartrate', 'Accelerometery', 'Vector Magnitude',
-                        'ENMO', 'Step Count', 'Active Energy', 'Resting Energy', 'Total Energy', 'Sitting Time']
-        return render_template('minute_table.html', participant_columns=column_order, participant_data=participant_data, num_rows=num_rows)
+                        'ENMO', 'Step Count', 'Active Energy', 'Resting Energy', 'Total Energy', 'Sitting Time', 'weather']
+        return render_template('halfhour_table.html', participant_columns=column_order, participant_data=participant_data, num_rows=num_rows)
     return render_template('halfhour_level.html', participants=participants, num_rows=0)
 
 

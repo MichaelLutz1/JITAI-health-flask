@@ -62,6 +62,7 @@ def perform_calculations(data, input_data=None):
     processed_data['Total Energy'] = round(data['restingenergy'] +
                                            data['activeenergy'], 4)
     processed_data['Sitting Time'] = data['sittingtime']
+    # processed_data['weather'] = data['weather']
     return processed_data
 
 
@@ -72,5 +73,6 @@ def process_halfhour_level(data_arr):
     for data in processed_data_arr:
         if data is not None:
             processed_data = perform_calculations(data)
+            processed_data['weather'] = data['weather']
             database_access.write_participant_processed_data(
                 processed_data, 'HALFHOUR')

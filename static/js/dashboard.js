@@ -34,36 +34,36 @@ function updateTable(data, inputData) {
     updateStartEndDate(row, data, id);
     addEventListenerToButton(row, id);
     updateMaxHr(row);
-    displayWeather(row, data, id);
+    // displayWeather(row, data, id);
   });
 }
-async function displayWeather(row, data, id) {
-  const weatherSquare = row.querySelector(".weather");
-  const locationString = data[id]["location"];
-  let [long, lat] = locationString.split(" ");
-  long = parseFloat(long);
-  lat = parseFloat(lat);
-  try {
-    const pointResponse = await fetch(`https://api.weather.gov/points/${long},${lat}`);
-    const pointInfo = await pointResponse.json();
-    const foreCastLink = pointInfo.properties.forecastHourly;
-    const weatherResponse = await fetch(foreCastLink);
-    const weatherData = await weatherResponse.json();
-    const weatherInfo = weatherData.properties.periods[0];
-    const temp = weatherInfo.temperature;
-    const precipitation = weatherInfo.probabilityOfPrecipitation.value;
-    const wind = weatherInfo.windSpeed;
-    const humidity = weatherInfo.relativeHumidity.value;
-    weatherSquare.innerHTML = `
-  <div>Temp: ${temp} Deg F</div>
-  <div>Precipitation: ${precipitation}%</div>
-  <div>Wind: ${wind}</div>
-  <div>Humidity: ${humidity}</div>
-  `;
-  } catch (error) {
-    console.log("error", error);
-  }
-}
+// async function displayWeather(row, data, id) {
+//   const weatherSquare = row.querySelector(".weather");
+//   const locationString = data[id]["location"];
+//   let [long, lat] = locationString.split(" ");
+//   long = parseFloat(long);
+//   lat = parseFloat(lat);
+//   try {
+//     const pointResponse = await fetch(`https://api.weather.gov/points/${long},${lat}`);
+//     const pointInfo = await pointResponse.json();
+//     const foreCastLink = pointInfo.properties.forecastHourly;
+//     const weatherResponse = await fetch(foreCastLink);
+//     const weatherData = await weatherResponse.json();
+//     const weatherInfo = weatherData.properties.periods[0];
+//     const temp = weatherInfo.temperature;
+//     const precipitation = weatherInfo.probabilityOfPrecipitation.value;
+//     const wind = weatherInfo.windSpeed;
+//     const humidity = weatherInfo.relativeHumidity.value;
+//     weatherSquare.innerHTML = `
+//   <div>Temp: ${temp} Deg F</div>
+//   <div>Precipitation: ${precipitation}%</div>
+//   <div>Wind: ${wind}</div>
+//   <div>Humidity: ${humidity}</div>
+//   `;
+//   } catch (error) {
+//     console.log("error", error);
+//   }
+// }
 function addEventListenerToButton(row, id) {
   const buttons = row.querySelectorAll(".minute_level button, .halfhour_level button");
   buttons.forEach(button => {

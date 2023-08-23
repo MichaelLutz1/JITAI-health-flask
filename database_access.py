@@ -131,37 +131,14 @@ def get_processed_data(requested_participant, start_date, end_date, type, offset
         datetime(1900, 1, 1)), str(datetime(9999, 12, 31))
     collection = db[database_name]["PROCESSED"][type]
     if requested_participant == 'all':
-        starting_id = collection.find({
-            'Time': {
-                '$gte': start_date if start_date else start_default,
-                '$lte': end_date if end_date else end_default
-            }
-        }).sort('_id', 1)
-        list_starting = starting_id
-        print(offset)
-        last_id = starting_id[offset]['_id']
         query = {
-            '_id': {
-                '$gte': last_id
-            },
             'Time': {
                 '$gte': start_date if start_date else start_default,
                 '$lte': end_date if end_date else end_default
             }
         }
     else:
-        starting_id = collection.find({
-            'participantid': requested_participant,
-            'Time': {
-                '$gte': start_date if start_date else start_default,
-                '$lte': end_date if end_date else end_default
-            }
-        }).sort('_id', 1)
-        last_id = starting_id[offset]['_id']
         query = {
-            '_id': {
-                '$gte': last_id
-            },
             'participantid': requested_participant,
             'Time': {
                 '$gte': start_date if start_date else start_default,
@@ -170,7 +147,7 @@ def get_processed_data(requested_participant, start_date, end_date, type, offset
         }
     if not collection.count_documents({}) == 0:
         all_entries_in_timeframe = list(
-            collection.find(query).sort('_id', 1).limit(10))
+            collection.find(query).sort('_id', 1).skip(offset).limit(10))
         num_rows += collection.count_documents(query)
         for entry in all_entries_in_timeframe:
             participant_data.append(entry)

@@ -23,7 +23,7 @@ svg{
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "roboto", monospace;
+  font-family: "roboto", sans-serif;
 }
 section {
   height: 100%;

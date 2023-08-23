@@ -67,48 +67,6 @@ def delete_data():
     db.participant_tokens.delete_many({})
 
 
-def create_data():
-    db = get_db()
-    data = db["data"]
-    close_db()
-
-
-def get_dialogue():
-    db = get_db()
-    if "dialogue" not in db.list_collection_names():
-        dialogue = db["dialogue"]
-    return db["dialogue"]
-
-
-def get_participant_info():
-    db = get_db()
-    if "participant_info" not in db.list_collection_names():
-        participant_info = db["participant_info"]
-    return db["participant_info"]
-
-
-def insert_participant_info(nudge_text, participant_id):
-    participant_info_collection = get_participant_info()
-    participant_info_collection.insert_one({
-        "participant_id": participant_id,
-        "nudge_text": nudge_text
-    })
-    close_db()
-
-
-def get_participant_details(number):
-    participant_info_collection = get_participant_info()
-    query = {"number": number}
-    participant_details = participant_info_collection.find(query)
-    for element in participant_details:
-        name = element['name']
-        number = element['number']
-        participant_id = element['participant_id']
-        socket = element['socket']
-    close_db
-    return name, number, participant_id, socket
-
-
 def request_dashboard_data():
     db = get_db()
     response = {}
@@ -116,8 +74,8 @@ def request_dashboard_data():
     for participant in participants:
         data = get_start_and_end_dates(participant)
         latest_date = data['most_recent_date']
-        latest_collection = db[database_name]['RAW'].find_one(
-            {'time': latest_date, 'participantid': participant})
+        query = {'time': latest_date, 'participantid': participant}
+        latest_collection = db[database_name]['RAW'].find_one(query)
         data['location'] = latest_collection['location']
         response[participant] = data
     return response
@@ -167,131 +125,6 @@ def get_input_data():
     return res
 
 
-# def calc_halfhour_averages(id):
-#     data = get_start_and_end_dates(id)
-#     curr = data['earliest_date']
-#     end = data['most_recent_date']
-#     averaged_data = []
-#     while compare_date(curr, end):
-#         averaged_data.append(average_data(id, curr, add_thirty_minutes(curr)))
-#         curr = add_thirty_minutes(curr)
-#     return []
-#
-#
-# def average_data(id, curr, end):
-#     db = get_db()
-#     query = {
-#         'participantid': id,
-#         'Time': {
-#             '$gte': curr,
-#             '$lte': end,
-#         }
-#     }
-#     average_cursor = db[database_name]['PROCESSED']['MINUTE'].find(query, {
-#         '_id': 0})
-#     halfhour_average = {}
-#     count = 0
-#     for data in average_cursor:
-#         print(average_cursor)
-#         if data['Heartrate'] != 0:
-#             for key, value in data.items():
-#                 if key in halfhour_average:
-#                     match key:
-#                         case 'Accelerometery':
-#                             halfhour_average[key] = sum_xyz(
-#                                 halfhour_average[key], value)
-#                             continue
-#                         case 'participantid':
-#                             continue
-#                         case 'Time':
-#                             continue
-#                         case _:
-#                             continue
-#                             halfhour_average[key] += int(value)
-#                     count += 1
-#                 else:
-#                     if key == 'Accelerometery':
-#                         halfhour_average[key] = sum_xyz(
-#                             None, value)
-#                     else:
-#                         halfhour_average[key] = value
-#                     count = 1
-#     # if count < 28:
-#     #     return None
-#     # else:
-#     return divide_by_count(id, halfhour_average, count, curr, end)
-#
-#
-# def divide_by_count(id, halfhour_average, count, curr, end):
-#     processed_averages = {}
-#     for key, val in halfhour_average.items():
-#         match key:
-#             case 'Accelerometery':
-#                 processed_averages[key] = rebuild_xyz(val, count)
-#                 continue
-#             case 'participantid':
-#                 processed_averages[key] = id
-#                 continue
-#             case 'Time':
-#                 processed_averages[key] = format_time(curr, end)
-#                 continue
-#             case _:
-#                 continue
-#     return processed_averages
-#
-# def format_time(curr, end):
-#     # print(curr, end)
-#     return curr
-#
-#
-#
-# def rebuild_xyz(val, count):
-#     for idx in range(len(val)):
-#         average = round((val[idx] / count), 3)
-#         if average == 0.0:
-#             val[idx] = 0
-#         else:
-#             val[idx] = average
-#     x_str = f'x:{val[0]} '
-#     y_str = f'y:{val[1]} '
-#     z_str = f'z:{val[2]}'
-#     return x_str + y_str + z_str
-#
-#
-# def sum_xyz(initial_val, new_val):
-#     new_x, new_y, new_z = split_xyz(new_val)
-#     if initial_val is None:
-#         return [new_x, new_y, new_z]
-#     initial_x = initial_val[0]
-#     initial_y = initial_val[1]
-#     initial_z = initial_val[2]
-#     sum_x = initial_x + new_x
-#     sum_y = initial_y + new_y
-#     sum_z = initial_z + new_z
-#     return [sum_x, sum_y, sum_z]
-#
-#
-# def split_xyz(st):
-#     xyz_arr = st.split(' ')
-#     for idx, val in enumerate(xyz_arr):
-#         xyz_arr[idx] = val.split(':')[1]
-#     return float(xyz_arr[0]), float(xyz_arr[1]), float(xyz_arr[2])
-#
-#
-# def add_thirty_minutes(time):
-#     date_format = "%Y-%m-%d %H:%M:%S.%f"
-#     dt = datetime.strptime(time, date_format)
-#     dt_30_minutes_later = dt + timedelta(minutes=30)
-#     output_string = dt_30_minutes_later.strftime(date_format)
-#     return output_string
-#
-#
-# def compare_date(first, second):
-#     first_date = datetime.strptime(first, "%Y-%m-%d %H:%M:%S.%f")
-#     second_date = datetime.strptime(second, "%Y-%m-%d %H:%M:%S.%f")
-#     return first_date < second_date
-
-
 def get_start_and_end_dates(id):
     db = get_db()
     collection = db[database_name]['RAW']
@@ -316,18 +149,3 @@ def get_start_and_end_dates(id):
     ]
     data = next(collection.aggregate(pipeline), None)
     return data
-
-
-def weekly_data(participants, start_date, end_date, week):
-
-    return
-
-
-def dialogue_data(participants, start_date, end_date):
-
-    return
-
-
-def participant_details_data(participants, start_date, end_date):
-
-    return

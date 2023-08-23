@@ -1,9 +1,8 @@
 
 from database_access import *
-from flask import Flask, abort, request, render_template, redirect, jsonify
+from flask import Flask, request, render_template, jsonify
 import json
 # import HTML
-import queue
 import logging
 app = Flask(__name__)
 
@@ -13,7 +12,6 @@ agent_list = []
 socket = 49153
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 logger = None
-participant_id_list = []
 
 
 def setup_logger(name, log_file, level=logging.DEBUG):
@@ -66,21 +64,6 @@ def dashboardapi():
         json_data = jsonify(data)
         return json_data
 
-
-# @app.route('/dashboard', methods=['POST', 'GET'])
-# def stats_summ():
-#     participants = get_participants()
-#     if request.method == "POST":
-
-#         requested_id = request.form["participants"]
-#         start_date = request.form["start_date"]
-#         end_date = request.form["end_date"]
-
-#         participant_data = request_dashboard_data(
-#             requested_id, start_date, end_date)
-#         return render_template('dashboard_results.html', data=participants, participant_data=participant_data)
-#     else:
-#         return render_template('dashboard_results.html', data=participants)
 
 @app.route('/api/processed_data')
 def all_processed_data():

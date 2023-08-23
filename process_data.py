@@ -62,7 +62,6 @@ def perform_calculations(data, input_data=None):
     processed_data['Total Energy'] = round(data['restingenergy'] +
                                            data['activeenergy'], 4)
     processed_data['Sitting Time'] = data['sittingtime']
-    # processed_data['weather'] = data['weather']
     return processed_data
 
 

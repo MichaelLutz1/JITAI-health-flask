@@ -39,7 +39,7 @@
     {% endif %}
     {% else %}
     <td
-      class="{{header|lower|replace(' ', '-')}}{% if entry[header] == 0 %} zero{% endif %}{% if header == 'ENMO' %}{% if entry[header] < 35.6 %} sedentary{% elif entry[header] < 201.4 %} light{% elif entry[header] < 707 %} moderate{% else %} vigorous{% endif %}{% endif %}">
+      class="{{header|lower|replace(' ', '-')}}{% if entry[header] == 0 %} zero{% endif %}{% if header == 'enmo' %}{% if entry[header] < 35.6 %} sedentary{% elif entry[header] < 201.4 %} light{% elif entry[header] < 707 %} moderate{% else %} vigorous{% endif %}{% endif %}">
       {{ entry[header] }}
     </td>
     {% endif %}

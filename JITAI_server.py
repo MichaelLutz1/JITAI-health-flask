@@ -94,8 +94,8 @@ def halfhour_level_page():
         offset = data.get('offset')
         participant_data, num_rows = get_processed_data(
             requested_participant, start_date, end_date, 'HALFHOUR', offset)
-        column_order = ['participantid', 'Time', 'Heartrate', 'Accelerometery', 'Vector Magnitude',
-                        'ENMO', 'Step Count', 'Active Energy', 'Resting Energy', 'Total Energy', 'Sitting Time', 'weather']
+        column_order = ['participantid', 'time', 'heartrate', 'acceleration', 'vectormagnitude',
+                        'enmo', 'stepcount', 'activeenergy', 'restingenergy', 'totalenergy', 'sittingtime', 'weather']
         return render_template('halfhour_table.html', participant_columns=column_order, participant_data=participant_data, num_rows=num_rows)
     return render_template('halfhour_level.html', participants=participants, num_rows=0)
 
@@ -111,8 +111,8 @@ def minute_level_page():
         offset = data.get('offset')
         participant_data, num_rows = get_processed_data(
             requested_participant, start_date, end_date, 'MINUTE', offset)
-        column_order = ['participantid', 'Time', 'Heartrate', 'Accelerometery', 'Vector Magnitude',
-                        'ENMO', 'Step Count', 'Active Energy', 'Resting Energy', 'Total Energy', 'Sitting Time']
+        column_order = ['participantid', 'time', 'heartrate', 'acceleration', 'vectormagnitude',
+                        'enmo', 'stepcount', 'activeenergy', 'restingenergy', 'totalenergy', 'sittingtime']
         return render_template('minute_table.html', participant_columns=column_order, participant_data=participant_data, num_rows=num_rows)
     return render_template('minute_level.html', participants=participants, num_rows=0)
 

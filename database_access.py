@@ -1,6 +1,6 @@
 import queue
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime
 from pymongo import MongoClient
 from constants import database_name, database_port, database_ip_address
 __client = None
@@ -90,7 +90,7 @@ def get_processed_data(requested_participant, start_date, end_date, type, offset
     collection = db[database_name]["PROCESSED"][type]
     if requested_participant == 'all':
         query = {
-            'Time': {
+            'time': {
                 '$gte': start_date if start_date else start_default,
                 '$lte': end_date if end_date else end_default
             }
@@ -98,7 +98,7 @@ def get_processed_data(requested_participant, start_date, end_date, type, offset
     else:
         query = {
             'participantid': requested_participant,
-            'Time': {
+            'time': {
                 '$gte': start_date if start_date else start_default,
                 '$lte': end_date if end_date else end_default
             }

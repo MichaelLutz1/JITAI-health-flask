@@ -90,7 +90,7 @@ async function fetchAndUpdateTable(id, start = undefined, end = undefined, shoul
 }
 
 function formatXYZ() {
-  const xyzs = document.querySelectorAll(".accelerometery");
+  const xyzs = document.querySelectorAll(".acceleration");
   xyzs.forEach((xyz) => {
     const parent = xyz.parentNode;
     const cl = xyz.className;

@@ -48,20 +48,14 @@ def perform_calculations(data, input_data=None):
         data[key] = is_nullish(data[key])
 
     processed_data = {}
-    processed_data['participantid'] = data['participantid']
-    processed_data['Time'] = data['time']
-    processed_data["Vector Magnitude"] = data_calculations.calcVM(
+    for key, value in data.items():
+        processed_data[key] = value
+    processed_data["vectormagnitude"] = data_calculations.calcVM(
         data['acceleration'])
-    processed_data['ENMO'] = data_calculations.calcENMO(
-        processed_data['Vector Magnitude'])
-    processed_data['Accelerometery'] = data['acceleration']
-    processed_data['Heartrate'] = data['heartrate']
-    processed_data['Step Count'] = data['stepcount']
-    processed_data['Active Energy'] = data['activeenergy']
-    processed_data['Resting Energy'] = data['restingenergy']
-    processed_data['Total Energy'] = round(data['restingenergy'] +
-                                           data['activeenergy'], 4)
-    processed_data['Sitting Time'] = data['sittingtime']
+    processed_data['enmo'] = data_calculations.calcENMO(
+        processed_data['vectormagnitude'])
+    processed_data['totalenergy'] = round(data['restingenergy'] +
+                                          data['activeenergy'], 4)
     return processed_data
 
 

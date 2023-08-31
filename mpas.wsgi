@@ -1,7 +1,7 @@
 import sys
 
-sys.path.insert(0, "/usa/kumar/JITAI/JITAICoach/")
-activate_this = '/usa/kumar/python-environments/besmart_env4/bin/activate_this.py'
+sys.path.insert(0, "/usa/mplutz/JITAI/JITAICoach/")
+activate_this = '/usa/mplutz/python-environment/mpas-venv/bin/activate_this.py'
 
 with open(activate_this, "r") as f:
         exec(f.read(), {'__file__': activate_this})

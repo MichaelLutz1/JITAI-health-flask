@@ -27,12 +27,12 @@ def setup_logger(name, log_file, level=logging.DEBUG):
     return logger
 
 
-@app.route('/mpas')
+@app.route('/')
 def home():
     return render_template('index.html')
 
 
-@app.route('/mpas/dashboard', methods=['GET', 'POST'])
+@app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
     participants = get_participants()
     if request.method == 'POST':
@@ -40,7 +40,7 @@ def dashboard():
     return render_template('dashboard.html', participants=participants)
 
 
-@app.route('/mpas/inputdata', methods=['GET', 'POST'])
+@app.route('/inputdata', methods=['GET', 'POST'])
 def inputdata():
     if request.method == "GET":
         try:
@@ -57,7 +57,7 @@ def inputdata():
             print('error', request.data)
 
 
-@app.route('/mpas/dashboardapi', methods=['GET', 'POST'])
+@app.route('/dashboardapi', methods=['GET', 'POST'])
 def dashboardapi():
     if request.method == 'GET':
         data = request_dashboard_data()
@@ -65,7 +65,7 @@ def dashboardapi():
         return json_data
 
 
-@app.route('/mpas/api/processed_data')
+@app.route('/api/processed_data')
 def all_processed_data():
     db = get_db()
     id = request.args['id']
@@ -83,7 +83,7 @@ def all_processed_data():
     return data_json
 
 
-@app.route('/mpas/halfhour_level', methods=['POST', 'GET'])
+@app.route('/halfhour_level', methods=['POST', 'GET'])
 def halfhour_level_page():
     participants = get_participants()
     if request.method == 'POST':
@@ -100,7 +100,7 @@ def halfhour_level_page():
     return render_template('halfhour_level.html', participants=participants, num_rows=0)
 
 
-@app.route('/mpas/minute_level', methods=['POST', 'GET'])
+@app.route('/minute_level', methods=['POST', 'GET'])
 def minute_level_page():
     participants = get_participants()
     if request.method == 'POST':
@@ -117,7 +117,7 @@ def minute_level_page():
     return render_template('minute_level.html', participants=participants, num_rows=0)
 
 
-@app.route("/mpas/api/watch", methods=["POST", "GET"])
+@app.route("/api/watch", methods=["POST", "GET"])
 def MPAS_page():
     global logger
 

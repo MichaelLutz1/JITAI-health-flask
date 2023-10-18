@@ -71,7 +71,7 @@ function addEventListenerToButton(row, id) {
       const type = button.parentNode.className
       const URLdata = { id: id };
       const query = new URLSearchParams(URLdata).toString();
-      window.location.href = `/mpas/${type}?` + query;
+      window.location.href = `/${type}?` + query;
     });
   });
 }
@@ -129,25 +129,25 @@ function updateMaxHr(row) {
 }
 
 async function renderTemplate() {
-  const res = await fetch("/mpas/dashboard", { method: "POST" });
+  const res = await fetch("/dashboard", { method: "POST" });
   const data = await res.text();
   const tableContainer = document.querySelector("#data-container");
   tableContainer.innerHTML = data;
 }
 async function fetchDataOnLoad() {
-  const fetchData = await fetch("/mpas/dashboardapi", { method: "GET" });
+  const fetchData = await fetch("/dashboardapi", { method: "GET" });
   const data = await fetchData.json();
   return data;
 }
 async function getInputData() {
-  const res = await fetch("/mpas/inputdata", { method: "GET" });
+  const res = await fetch("/inputdata", { method: "GET" });
   const data = await res.json();
   return data;
 }
 
 async function sendInputData(id, data, type) {
   try {
-    const res = await fetch("/mpas/inputdata", {
+    const res = await fetch("/inputdata", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

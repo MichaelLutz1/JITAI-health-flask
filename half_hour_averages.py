@@ -35,38 +35,49 @@ def average_data(data_arr, curr, end):
     halfhour_average = {}
     count = 0
     for data in data_within_range:
-        if data['heartrate'] != 0:
-            for key, value in data.items():
-                if key in halfhour_average:
-                    match key:
-                        case '_id':
-                            continue
-                        case 'acceleration':
-                            halfhour_average[key] = sum_xyz(
-                                halfhour_average[key], value)
-                            continue
-                        case 'participantid':
-                            continue
-                        case 'time':
-                            continue
-                        case 'location':
-                            halfhour_average[key] = sum_long_lat(
-                                halfhour_average[key], value)
-                        case _:
-                            halfhour_average[key] += int(value)
-                            continue
-                    count += 1
-                else:
-                    if key == 'acceleration':
-                        halfhour_average[key] = sum_xyz(
-                            None, value)
-                    elif key == 'location':
-                        halfhour_average[key] = sum_long_lat(None, value)
-                    else:
-                        halfhour_average[key] = value
-                    count = 1
+        if data['heartrate'] == 0:
+            count += 1
     if count < 28:
         return None
+    acceleration = [obj.get('acceleration') for obj in data_within_range]
+    battery = [obj.get('battery') for obj in data_within_range]
+    active_energy = [obj.get('activeenergy') for obj in data_within_range]
+    resting_energy = [obj.get('restingenergy') for obj in data_within_range]
+    step_count = [obj.get('stepcount') for obj in data_within_range]
+    heart_rate = [obj.get('heartrate') for obj in data_within_range]
+    # for data in data_within_range:
+    #     if data['heartrate'] != 0:
+    #         for key, value in data.items():
+    #             if key in halfhour_average:
+    #                 match key:
+    #                     case '_id':
+    #                         continue
+    #                     case 'acceleration':
+    #                         halfhour_average[key] = sum_xyz(
+    #                             halfhour_average[key], value)
+    #                         continue
+    #                     case 'participantid':
+    #                         continue
+    #                     case 'time':
+    #                         continue
+    #                     case 'location':
+    #                         halfhour_average[key] = sum_long_lat(
+    #                             halfhour_average[key], value)
+    #                     case _:
+    #                         halfhour_average[key] += int(value)
+    #                         continue
+    #                 count += 1
+    #             else:
+    #                 if key == 'acceleration':
+    #                     halfhour_average[key] = sum_xyz(
+    #                         None, value)
+    #                 elif key == 'location':
+    #                     halfhour_average[key] = sum_long_lat(None, value)
+    #                 else:
+    #                     halfhour_average[key] = value
+    #                 count = 1
+    # if count < 28:
+    #     return None
     averaged_data = divide_by_count(id, halfhour_average, count, curr, end)
     averaged_data['weather'] = get_weather(averaged_data['location'])
 

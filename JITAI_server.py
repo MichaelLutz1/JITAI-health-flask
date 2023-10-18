@@ -2,7 +2,6 @@
 from database_access import *
 from flask import Flask, request, render_template, jsonify
 import json
-# import HTML
 import logging
 app = Flask(__name__)
 
@@ -27,12 +26,19 @@ def setup_logger(name, log_file, level=logging.DEBUG):
     return logger
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def home():
-    return render_template('index.html')
+    error = None
+    if request.method == 'POST':
+        if request.form['password'] != 'MPAS100':
+            error = 'Invalid Credentials. Please try again.'
+        else:
+            participants = get_participants()
+            return render_template('dashboard.html', participants=participants)
+    return render_template('index.html', error=error)
 
 
-@app.route('/dashboard', methods=['GET', 'POST'])
+@app.route('/dashboard', methods=['GET', 'POST', 'DELETE'])
 def dashboard():
     participants = get_participants()
     if request.method == 'POST':
@@ -117,6 +123,23 @@ def minute_level_page():
     return render_template('minute_level.html', participants=participants, num_rows=0)
 
 
+@app.route('/raw_data', methods=['POST', 'GET'])
+def raw_data_page():
+    participants = get_participants()
+    if request.method == 'POST':
+        data = request.json
+        requested_participant = data.get("participant")
+        start_date = data.get("start_date")
+        end_date = data.get("end_date")
+        offset = data.get('offset')
+        participant_data, num_rows = get_processed_data(
+            requested_participant, start_date, end_date, 'MINUTE', offset)
+        column_order = ['participantid', 'time', 'heartrate', 'acceleration', 'vectormagnitude',
+                        'enmo', 'stepcount', 'activeenergy', 'restingenergy', 'totalenergy', 'sittingtime']
+        return render_template('minute_table.html', participant_columns=column_order, participant_data=participant_data, num_rows=num_rows)
+    return render_template('minute_level.html', participants=participants, num_rows=0)
+
+
 @app.route("/api/watch", methods=["POST", "GET"])
 def MPAS_page():
     global logger
@@ -128,7 +151,7 @@ def MPAS_page():
             import process_data
             process_data.process_participant_data(content)
             process_data.process_minute_level(content, input_data)
-            process_data.process_halfhour_level(content)
+            # process_data.process_halfhour_level(content)
             return "OK"
         except:
             print("Error", request.data)

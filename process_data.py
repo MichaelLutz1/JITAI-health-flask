@@ -36,13 +36,6 @@ def process_participant_data(data_arr):
         database_access.write_participant_data(data)
 
 
-def process_minute_level(data_arr, input_data):
-    for data in data_arr:
-        processed_data = perform_calculations(data, input_data)
-        database_access.write_participant_processed_data(
-            processed_data, 'MINUTE')
-
-
 def perform_calculations(data, input_data=None):
     for key in data:
         data[key] = is_nullish(data[key])
@@ -50,13 +43,23 @@ def perform_calculations(data, input_data=None):
     processed_data = {}
     for key, value in data.items():
         processed_data[key] = value
-    processed_data["vectormagnitude"] = data_calculations.calcVM(
+    processed_data['acceleration'] = data_calculations.calcAcceleration(
         data['acceleration'])
+    print(processed_data['acceleration'])
+    processed_data["vectormagnitude"] = data_calculations.calcVM(
+        processed_data['acceleration'])
     processed_data['enmo'] = data_calculations.calcENMO(
         processed_data['vectormagnitude'])
     processed_data['totalenergy'] = round(data['restingenergy'] +
                                           data['activeenergy'], 4)
     return processed_data
+
+
+def process_minute_level(data_arr, input_data):
+    for data in data_arr:
+        processed_data = perform_calculations(data, input_data)
+        database_access.write_participant_processed_data(
+            processed_data, 'MINUTE')
 
 
 def process_halfhour_level(data_arr):

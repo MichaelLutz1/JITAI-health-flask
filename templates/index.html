@@ -1,25 +1,26 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Home</title>
-    <link rel="stylesheet" href="../mpas/static/stylesheets/home.css" />
-  </head>
-  <body>
-    <main>
-      <div class="banner">
-        <p class="title">MPAS DASHBOARD</p>
-      </div>
-      <div class="login">
-          <img src="../mpas/static/images/Walkitlogitlogo.png" alt="Walk it log it logo">
-          <input type="password" name="password" placeholder="Password" class="password"/>
-          <input type="submit" value="Submit" class="submit"/>
-      </div>
-    </main>
-  </body>
-    <script>
-      const button = document.querySelector('.submit');
-      button.addEventListener('click', () => {
-        window.location.href = '/mpas/dashboard'
-      });
-    </script>
+
+<head>
+  <title>Home</title>
+  <link rel="stylesheet" href="../static/stylesheets/home.css" />
+</head>
+
+<body>
+  <main>
+    <div class="banner">
+      <p class="title">MPAS DASHBOARD</p>
+    </div>
+      <form action="" method="post" class="login">
+      <img src="../static/images/Walkitlogitlogo.png" alt="Walk it log it logo">
+        <input type="password" name="password" value="{{ request.form.password }}" placeholder="Password"
+          class="password" />
+        <input type="submit" value="Login" class="submit" />
+      </form>
+      {% if error %}
+        <p class="">{{ error }}</p>
+      {% endif %}
+  </main>
+</body>
+
 </html>

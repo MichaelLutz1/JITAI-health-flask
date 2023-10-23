@@ -1,6 +1,6 @@
 import sys
 
-sys.path.insert(0, "/usa/mplutz/JITAI/JITAICoach/")
+sys.path.insert(0, "/usa/mplutz/JITAI-health-flask/")
 activate_this = '/usa/mplutz/python-environment/mpas-venv/bin/activate_this.py'
 
 with open(activate_this, "r") as f:

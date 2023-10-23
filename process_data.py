@@ -45,7 +45,6 @@ def perform_calculations(data, input_data=None):
         processed_data[key] = value
     processed_data['acceleration'] = data_calculations.calcAcceleration(
         data['acceleration'])
-    print(processed_data['acceleration'])
     processed_data["vectormagnitude"] = data_calculations.calcVM(
         processed_data['acceleration'])
     processed_data['enmo'] = data_calculations.calcENMO(

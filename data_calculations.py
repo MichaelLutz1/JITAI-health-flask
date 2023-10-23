@@ -21,14 +21,11 @@ def calcENMO(vm):
 
 def calcAcceleration(acceleration_string):
     accel_arr = acceleration_string.split(';')
-    xs = []
-    ys = []
-    zs = []
+    xs = ys = zs = []
     for accel in accel_arr:
         if accel == '':
             continue
         accel = accel.split(' ', 3)
-        print(accel)
         xs.append(float(accel[0].split(':')[1]))
         ys.append(float(accel[1].split(':')[1]))
         zs.append(float(accel[2].split(':')[1]))

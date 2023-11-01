@@ -1,6 +1,7 @@
 database_name = "JITAI_MPAS"
 database_ip_address = "127.0.0.1"
 database_port = 27017
+offset_amount = 100
 
 FITBIT_CLIENT_ID = "22D7LV"
 FITBIT_CLIENT_SECRET = "710c88a677aabb86d902505c2cc6feec"

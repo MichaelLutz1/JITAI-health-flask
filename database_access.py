@@ -2,7 +2,7 @@ import queue
 import logging
 from datetime import datetime
 from pymongo import MongoClient
-from constants import database_name, database_port, database_ip_address
+from constants import database_name, database_port, database_ip_address, offset_amount
 __client = None
 
 logger = logging.getLogger('database.log')
@@ -105,7 +105,7 @@ def get_processed_data(requested_participant, start_date, end_date, type, offset
         }
     if not collection.count_documents({}) == 0:
         all_entries_in_timeframe = list(
-            collection.find(query).sort('_id', 1).skip(offset).limit(10))
+            collection.find(query).sort('_id', 1).skip(offset).limit(offset_amount))
         num_rows += collection.count_documents(query)
         for entry in all_entries_in_timeframe:
             participant_data.append(entry)

@@ -152,6 +152,7 @@ def MPAS_page():
             process_data.process_participant_data(content)
             process_data.process_minute_level(content, input_data)
             # process_data.process_halfhour_level(content)
+            logger.info("Processed data for participant")
             return "OK"
         except:
             print("Error", request.data)

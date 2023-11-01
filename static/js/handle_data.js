@@ -2,6 +2,7 @@ const pathName = window.location.pathname.split("/")[2];
 const form = document.querySelector("form");
 let offset = 0
 let page = 1
+const offset_amount = 100
 
 window.onload = () => {
   const url = window.location.search;
@@ -22,11 +23,11 @@ window.onload = () => {
 
 const leftArrow = document.querySelector('.left-arrow')
 leftArrow.addEventListener('click', () => {
-  changeOffset(-10);
+  changeOffset(-offset_amount);
 })
 const rightArrow = document.querySelector('.right-arrow')
 rightArrow.addEventListener('click', () => {
-  changeOffset(10);
+  changeOffset(offset_amount);
 })
 function changeOffset(amount) {
   offset += amount
@@ -75,8 +76,8 @@ async function fetchAndUpdateTable(id, start = undefined, end = undefined, shoul
     if (shouldReloadNumRows) {
       const numRows = dataContainer.querySelector('.num-rows').innerText;
       const numPagesElement = document.querySelector('.num-pages')
-      const overflow = numRows % 10
-      const numPages = Math.floor(numRows / 10)
+      const overflow = numRows % offset_amount
+      const numPages = Math.floor(numRows / offset_amount)
       numPagesElement.innerText = numPages + (overflow > 0 ? 1 : 0)
       page = 1
       const pageNumber = document.querySelector('.curr-page');

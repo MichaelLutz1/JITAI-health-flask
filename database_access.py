@@ -73,10 +73,6 @@ def request_dashboard_data():
     participants = get_participants()
     for participant in participants:
         data = get_start_and_end_dates(participant)
-        latest_date = data['most_recent_date']
-        query = {'time': latest_date, 'participantid': participant}
-        latest_collection = db[database_name]['RAW'].find_one(query)
-        data['location'] = latest_collection['location']
         response[participant] = data
     return response
 

@@ -1,0 +1,32 @@
+<html>
+<table>
+  <thead>
+    <tr>
+      <th>Participant Id</th>
+      <th>Time</th>
+      <th>Heart Rate</th>
+      <th colspan="3">Accelerometery (x,y,z)</th>
+      <th>Vector Magnitude</th>
+      <th>ENMO</th>
+      <th>Step Count</th>
+      <th>Active Energy</th>
+      <th>Resting Energy</th>
+      <th>Total Energy</th>
+      <th>Sitting Time</th>
+    </tr>
+  </thead>
+
+  {% for entry in participant_data %}
+  <tr>
+    {% for header in participant_columns %}
+    <td
+      class="{{header|lower|replace(' ', '-')}}{% if entry[header] == 0 %} zero{% endif %}{% if header == 'enmo' %}{% if entry[header] < 35.6 %} sedentary{% elif entry[header] < 201.4 %} light{% elif entry[header] < 707 %} moderate{% else %} vigorous{% endif %}{% endif %}">
+      {{ entry[header] }}
+    </td>
+    {% endfor %}
+  </tr>
+  {% endfor %}
+</table>
+<div style="display: none;" class="num-rows">{{num_rows}}</div>
+
+</html>

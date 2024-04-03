@@ -1,4 +1,4 @@
-const pathName = window.location.pathname.split("/")[2];
+const pathName = window.location.pathname.split("/")[1];
 const form = document.querySelector("form");
 let offset = 0
 let page = 1
@@ -63,11 +63,7 @@ form.addEventListener("submit", (e) => {
 
 async function fetchAndUpdateTable(id, start = undefined, end = undefined, shouldReloadNumRows) {
   try {
-    const res = await fetch(`/mpas/${pathName}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ participant: id, start_date: start, end_date: end, offset: offset }),
-    });
+    const res = await fetch(`/api/data/${pathName}?participant=${id}&start_date=${start}&end_date=${end}&offset=${offset}`);
     const data = await res.text();
     const dataContainer = document.querySelector("#data-container");
     dataContainer.innerHTML = data;
@@ -91,6 +87,9 @@ async function fetchAndUpdateTable(id, start = undefined, end = undefined, shoul
 }
 
 function formatXYZ() {
+  if (pathName === "raw_data") {
+    return
+  }
   const xyzs = document.querySelectorAll(".acceleration");
   xyzs.forEach((xyz) => {
     const parent = xyz.parentNode;
@@ -134,7 +133,10 @@ async function downloadCsv() {
   document.body.removeChild(link);
 }
 async function getCsvString(id) {
-  const res = await fetch(`/mpas/api/processed_data?id=${id}&path=${pathName}`)
+  if (pathName === 'raw_data') {
+    return await getRawCsvString(id)
+  }
+  const res = await fetch(`/api/processed_data?id=${id}&path=${pathName}`)
   const data = await res.json()
   const rows = []
   headers = Object.keys(data[0])
@@ -146,6 +148,17 @@ async function getCsvString(id) {
       }
       return obj[header]
     });
+    rows.push(values.join(','));
+  });
+  return rows.join('\n')
+}
+async function getRawCsvString(id) {
+  const res = await fetch(`/api/raw_data?id=${id}`)
+  const data = await res.json()
+  const rows = []
+  headers = Object.keys(data[0])
+  rows.push(headers.join(','))
+  data.forEach(() => {
     rows.push(values.join(','));
   });
   return rows.join('\n')

@@ -1,5 +1,5 @@
-
-from database_access import *
+from database_access import get_db, request_dashboard_data, write_input_data, get_participants, get_processed_data, database_name, get_raw_data
+from constants import COLUMN_ORDER, RAW_COLUMN_ORDER
 from flask import Flask, request, render_template, jsonify
 import json
 import logging
@@ -30,9 +30,11 @@ def setup_logger(name, log_file, level=logging.DEBUG):
 def home():
     error = None
     if request.method == 'POST':
+        # Check if the password is correct
         if request.form['password'] != 'MPAS100':
             error = 'Invalid Credentials. Please try again.'
         else:
+            # If the password is correct, redirect to the dashboard
             participants = get_participants()
             return render_template('dashboard.html', participants=participants)
     return render_template('index.html', error=error)
@@ -46,12 +48,13 @@ def dashboard():
     return render_template('dashboard.html', participants=participants)
 
 
-@app.route('/inputdata', methods=['GET', 'POST'])
-def inputdata():
+# fetch data needed to display the dashboard and to write input data
+@app.route('/api/dashboard', methods=['GET', 'POST'])
+def dashboardData():
     if request.method == "GET":
         try:
-            inputdata_list = get_input_data()
-            return inputdata_list
+            data = request_dashboard_data()
+            return jsonify(data)
         except:
             print('error')
     if request.method == 'POST':
@@ -63,14 +66,7 @@ def inputdata():
             print('error', request.data)
 
 
-@app.route('/dashboardapi', methods=['GET', 'POST'])
-def dashboardapi():
-    if request.method == 'GET':
-        data = request_dashboard_data()
-        json_data = jsonify(data)
-        return json_data
-
-
+# gets participant data from the database to be downloaded as a csv
 @app.route('/api/processed_data')
 def all_processed_data():
     db = get_db()
@@ -89,23 +85,43 @@ def all_processed_data():
     return data_json
 
 
-@app.route('/halfhour_level', methods=['POST', 'GET'])
-def halfhour_level_page():
+@app.route('/api/raw_data')
+def all_raw_data():
+    db = get_db()
+    id = request.args['id']
+    collection = db[database_name]['RAW']
+    if id == 'all':
+        data_list = list(collection.find({}, {'_id': 0}))
+    else:
+        data_list = list(collection.find({'participantid': id}, {'_id': 0}))
+    data_json = json.dumps(data_list, default=str)
+    return data_json
+
+
+@app.route('/api/data/<data_type>', methods=['POST', 'GET'])
+def participantData(data_type):
     participants = get_participants()
-    if request.method == 'POST':
-        data = request.json
-        requested_participant = data.get("participant")
-        start_date = data.get("start_date")
-        end_date = data.get("end_date")
-        offset = data.get('offset')
-        participant_data, num_rows = get_processed_data(
-            requested_participant, start_date, end_date, 'HALFHOUR', offset)
-        column_order = ['participantid', 'time', 'heartrate', 'acceleration', 'vectormagnitude',
-                        'enmo', 'stepcount', 'activeenergy', 'restingenergy', 'totalenergy', 'sittingtime', 'weather']
-        return render_template('halfhour_table.html', participant_columns=column_order, participant_data=participant_data, num_rows=num_rows)
+    if request.method == 'GET':
+        requested_participant = request.args.get('participant')
+        start_date = request.args.get('start_date') if request.args.get(
+            'start_date') != 'undefined' else None
+        end_date = request.args.get('end_date')if request.args.get(
+            'end_date') != 'undefined' else None
+        offset = int(request.args.get('offset'))
+        if data_type == 'raw_data':
+            participant_data, num_rows = get_raw_data(
+                requested_participant, start_date, end_date, offset)
+            column_order = RAW_COLUMN_ORDER
+            return render_template('raw_data_table.html', participant_columns=column_order, participant_data=participant_data, num_rows=num_rows)
+        else:
+            participant_data, num_rows = get_processed_data(
+                requested_participant, start_date, end_date, data_type, offset)
+            column_order = COLUMN_ORDER
+            return render_template('data_table.html', participant_columns=column_order, participant_data=participant_data, num_rows=num_rows)
     return render_template('halfhour_level.html', participants=participants, num_rows=0)
 
 
+# Fetches the minute level data from the database and renders it in a table
 @app.route('/minute_level', methods=['POST', 'GET'])
 def minute_level_page():
     participants = get_participants()
@@ -117,10 +133,27 @@ def minute_level_page():
         offset = data.get('offset')
         participant_data, num_rows = get_processed_data(
             requested_participant, start_date, end_date, 'MINUTE', offset)
-        column_order = ['participantid', 'time', 'heartrate', 'acceleration', 'vectormagnitude',
-                        'enmo', 'stepcount', 'activeenergy', 'restingenergy', 'totalenergy', 'sittingtime']
-        return render_template('minute_table.html', participant_columns=column_order, participant_data=participant_data, num_rows=num_rows)
+        return render_template('data_table.html', participant_columns=COLUMN_ORDER, participant_data=participant_data, num_rows=num_rows)
     return render_template('minute_level.html', participants=participants, num_rows=0)
+
+# Fetches the half-hour data from the database and renders it in a table
+
+
+@app.route('/halfhour_level', methods=['POST', 'GET'])
+def halfhour_level_page():
+    participants = get_participants()
+    if request.method == 'POST':
+        data = request.json
+        requested_participant = data.get("participant")
+        start_date = data.get("start_date")
+        end_date = data.get("end_date")
+        offset = data.get('offset')
+        participant_data, num_rows = get_processed_data(
+            requested_participant, start_date, end_date, 'HALFHOUR', offset)
+        return render_template('data_table.html', participant_columns=COLUMN_ORDER, participant_data=participant_data, num_rows=num_rows)
+    return render_template('halfhour_level.html', participants=participants, num_rows=0)
+
+# Fetches the raw data from the database and displays it in a table
 
 
 @app.route('/raw_data', methods=['POST', 'GET'])
@@ -132,14 +165,13 @@ def raw_data_page():
         start_date = data.get("start_date")
         end_date = data.get("end_date")
         offset = data.get('offset')
-        participant_data, num_rows = get_processed_data(
-            requested_participant, start_date, end_date, 'MINUTE', offset)
-        column_order = ['participantid', 'time', 'heartrate', 'acceleration', 'vectormagnitude',
-                        'enmo', 'stepcount', 'activeenergy', 'restingenergy', 'totalenergy', 'sittingtime']
-        return render_template('minute_table.html', participant_columns=column_order, participant_data=participant_data, num_rows=num_rows)
-    return render_template('minute_level.html', participants=participants, num_rows=0)
+        participant_data, num_rows = get_raw_data(
+            requested_participant, start_date, end_date, offset)
+        return render_template('data_table.html', participant_columns=RAW_COLUMN_ORDER, participant_data=participant_data, num_rows=num_rows)
+    return render_template('raw_data.html', participants=participants, num_rows=0)
 
 
+# Takes in the data from the watch and processes it
 @app.route("/api/watch", methods=["POST", "GET"])
 def MPAS_page():
     global logger
@@ -147,7 +179,7 @@ def MPAS_page():
     if request.method == "POST":
         try:
             content = request.json
-            input_data = get_input_data()
+            input_data = request_dashboard_data()
             import process_data
             process_data.process_participant_data(content)
             process_data.process_minute_level(content, input_data)
@@ -170,148 +202,3 @@ get_db()
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True, port=9001)
-
-
-"""
-@app.route("/message", methods=['GET', 'POST'])
-def incoming_message():
-    # Respond to incoming messages with a friendly SMS.
-    # Start our response
-    global logger
-    logger.debug("%s inside post message")
-    content = request.json
-    
-    print(content['nudge_text'])
-    insert_participant_info(content['particiapnt_id'], content['nudge_text'])
-    
-
-    return 'OK'
-
-
-def get_dashboard_cell_color(color_scheme, data):
-    # color_scheme [(start,end, color)...]
-    for color_range in color_scheme:
-        start, end, color = color_range
-        if type(data) is not str:
-            if start <= float(data) and data <= end:
-                return color
-    return "white"
-
-
-"""
-
-# Registers the participants and creates a new agent for each user
-
-"""
-
-
-@app.route('/register', methods=['POST', 'GET'])
-def register():
-    agent = None
-    global participant_counter, database_ip_address, database_port, agent_list,socket, logger
-    # Code to create an agent object and pass the port number and Id
-    #participant_id = "P" + str(participant_counter)
-    
-    participant_id_list.append(p_id)
-
-    
-    logger.debug("pa_barriers %s", pa_barriers)
-    participant_id = p_id
-
-    agent = Agent(participant_id, database_ip_address, database_port,)
-    agent.start()
-    agent_list.append(agent)
-    insert_participant_info(name, number, participant_id, socket)
-    close_db()
-    participant_counter = participant_counter + 1
-    socket = socket + 1
-    #database_port = database_port + 1
-    return "Congratulations! You are now a registered user"
-
-
-@app.route('/dashboard')
-def dashboard():
-
-    return render_template('dashboard.html', data = participant_id_list)
-
-
-@app.route('/dialogue')
-def dialogue():
-
-    return render_template('dialogue.html', data = participant_id_list)
-
-
-@app.route('/participant_details')
-def participant_details():
-
-    return render_template('participant_details.html')
-
-
-@app.route('/weekly_stats')
-def weekly_stats():
-
-    return render_template('weekly_stats.html')
-
-
-@app.route('/dashboard', methods=['POST', 'GET'])
-def stats_summ():
-    participants = request.form["participants"]
-    start_date = request.form["start_date"]
-    end_date = request.form["end_date"]
-
-    html_text = "<par>Dashboard</par><br><par>Summaries</par><br>"
-    participant_columns, participant_data, participant_colors = all_dashboard_data(
-        participants, start_date, end_date)
-    close_db()
-
-    return render_template('dashboard_results.html', participant_columns=participant_columns, participant_data=participant_data)
-
-
-@app.route('/weekly_stats', methods=['POST', 'GET'])
-def weekly_summ():
-    participants = request.form["participants"]
-    week = request.form["weeks"]
-    start_date = request.form["start_date"]
-    end_date = request.form["end_date"]
-
-    html_text = "<par>Dashboard</par><br><par>Summaries</par><br>"
-    participant_columns, participant_data, participant_colors = weekly_data(
-        participants, start_date, end_date, week)
-    close_db()
-
-    return render_template('weekly_results.html', participant_columns=participant_columns, participant_data=participant_data)
-
-
-@app.route('/dia_summ', methods=['POST', 'GET'])
-def dia_summ():
-    participants = request.form["dia_participants"]
-    start_date = request.form["dia_start_date"]
-    end_date = request.form["dia_end_date"]
-
-    #html_text = "<par>Dashboard</par><br><par>Summaries</par><br>"
-    participant_columns, participant_data = dialogue_data(
-        participants, start_date, end_date)
-
-    html_text = "<par>Participant Messages</par><br>"
-    participant_table = HTML.Table(header_row=participant_columns)
-    for participant_stats in participant_data:
-        participant_row_cells = []
-        participant_table.rows.append(participant_stats)
-    html_text += str(participant_table)
-    close_db()
-    return html_text
-
-
-@app.route('/participant_details', methods=['POST', 'GET'])
-def stats():
-    participants = request.form["participants"]
-    start_date = request.form["start_date"]
-    end_date = request.form["end_date"]
-
-    html_text = "<par>Dashboard</par><br><par>Summaries</par><br>"
-    participant_details = participant_details_data(
-        participants, start_date, end_date)
-    return render_template('participant_results.html', participant_details=participant_details)
-
-
-"""

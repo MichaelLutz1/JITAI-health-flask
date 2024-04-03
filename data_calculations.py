@@ -19,6 +19,7 @@ def calcENMO(vm):
     return round(enmo, 3)
 
 
+# acceleraton format: x:0.0 y:0.0 z:0.0
 def calcAcceleration(acceleration_string):
     accel_arr = acceleration_string.split(';')
     xs = ys = zs = []

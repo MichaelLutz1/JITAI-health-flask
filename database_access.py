@@ -67,23 +67,14 @@ def delete_data():
     db.participant_tokens.delete_many({})
 
 
-def request_dashboard_data():
-    db = get_db()
-    response = {}
-    participants = get_participants()
-    for participant in participants:
-        data = get_start_and_end_dates(participant)
-        response[participant] = data
-    return response
-
-
-def get_processed_data(requested_participant, start_date, end_date, type, offset):
+def get_raw_data(requested_participant, start_date, end_date, offset=0):
     db = get_db()
     participant_data = []
+    dbTable = "RAW"
     num_rows = 0
     start_default, end_default = str(
         datetime(1900, 1, 1)), str(datetime(9999, 12, 31))
-    collection = db[database_name]["PROCESSED"][type]
+    collection = db[database_name][dbTable]
     if requested_participant == 'all':
         query = {
             'time': {
@@ -108,17 +99,57 @@ def get_processed_data(requested_participant, start_date, end_date, type, offset
     return participant_data, num_rows
 
 
-def get_input_data():
+def get_processed_data(requested_participant, start_date, end_date, type, offset=0):
+    db = get_db()
+    participant_data = []
+    num_rows = 0
+    dbTable = "MINUTE" if type == "minute_level" else "HALFHOUR"
+    start_default, end_default = str(
+        datetime(1900, 1, 1)), str(datetime(9999, 12, 31))
+    collection = db[database_name]["PROCESSED"][dbTable]
+    if requested_participant == 'all':
+        query = {
+            'time': {
+                '$gte': start_date if start_date else start_default,
+                '$lte': end_date if end_date else end_default
+            }
+        }
+    else:
+        query = {
+            'participantid': requested_participant,
+            'time': {
+                '$gte': start_date if start_date else start_default,
+                '$lte': end_date if end_date else end_default
+            }
+        }
+    if not collection.count_documents({}) == 0:
+        all_entries_in_timeframe = list(
+            collection.find(query).sort('_id', 1).skip(offset).limit(offset_amount))
+        num_rows += collection.count_documents(query)
+        for entry in all_entries_in_timeframe:
+            participant_data.append(entry)
+    return participant_data, num_rows
+
+
+def request_dashboard_data():
+    db = get_db()
+    response = {}
+    participants = get_participants()
+    for participant in participants:
+        data = get_start_and_end_dates(participant)
+        response[participant] = data
+        input_data = get_input_data(participant)
+        if input_data:
+            response[participant].update(input_data)
+    return response
+
+
+def get_input_data(participant):
     db = get_db()
     collection = db[database_name]["INPUTDATA"]
-    participants = get_participants()
-    res = {}
-    for participant in participants:
-        data = next(collection.find({'participantid': participant}, {
-                    '_id': 0, 'participantid': 0}), 0)
-        if data:
-            res[participant] = data
-    return res
+    data = next(collection.find({'participantid': participant}, {
+        '_id': 0, 'participantid': 0}), 0)
+    return data
 
 
 def get_start_and_end_dates(id):

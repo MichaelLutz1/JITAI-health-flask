@@ -2,6 +2,7 @@ const table = document.querySelector("#dataTable");
 const tableBody = document.querySelector("tbody");
 const participantDropdown = document.querySelector("#participant-dropdown");
 
+// Filering the table based on the participant
 participantDropdown.addEventListener("change", (e) => {
   const rows = document.querySelectorAll("tbody > tr");
   const val = e.target.value;
@@ -21,49 +22,21 @@ participantDropdown.addEventListener("change", (e) => {
 });
 
 window.onpageshow = async () => {
-  await renderTemplate();
+  await renderTable();
   const data = await fetchDataOnLoad();
-  const inputData = await getInputData();
-  updateTable(data, inputData);
+  updateTable(data);
 };
-function updateTable(data, inputData) {
+function updateTable(data) {
   const rows = document.querySelectorAll("tbody > tr");
   rows.forEach((row) => {
     const id = row.querySelector(".id").textContent;
-    updateInputData(row, inputData, id);
+    updateInputData(row, data, id);
     updateStartEndDate(row, data, id);
     addEventListenerToButton(row, id);
     updateMaxHr(row);
-    // displayWeather(row, data, id);
   });
 }
-// async function displayWeather(row, data, id) {
-//   const weatherSquare = row.querySelector(".weather");
-//   const locationString = data[id]["location"];
-//   let [long, lat] = locationString.split(" ");
-//   long = parseFloat(long);
-//   lat = parseFloat(lat);
-//   try {
-//     const pointResponse = await fetch(`https://api.weather.gov/points/${long},${lat}`);
-//     const pointInfo = await pointResponse.json();
-//     const foreCastLink = pointInfo.properties.forecastHourly;
-//     const weatherResponse = await fetch(foreCastLink);
-//     const weatherData = await weatherResponse.json();
-//     const weatherInfo = weatherData.properties.periods[0];
-//     const temp = weatherInfo.temperature;
-//     const precipitation = weatherInfo.probabilityOfPrecipitation.value;
-//     const wind = weatherInfo.windSpeed;
-//     const humidity = weatherInfo.relativeHumidity.value;
-//     weatherSquare.innerHTML = `
-//   <div>Temp: ${temp} Deg F</div>
-//   <div>Precipitation: ${precipitation}%</div>
-//   <div>Wind: ${wind}</div>
-//   <div>Humidity: ${humidity}</div>
-//   `;
-//   } catch (error) {
-//     console.log("error", error);
-//   }
-// }
+// Event listeners to change page on click
 function addEventListenerToButton(row, id) {
   const buttons = row.querySelectorAll(".minute_level button, .halfhour_level button");
   buttons.forEach(button => {
@@ -71,36 +44,22 @@ function addEventListenerToButton(row, id) {
       const type = button.parentNode.className
       const URLdata = { id: id };
       const query = new URLSearchParams(URLdata).toString();
-      window.location.href = `/mpas/${type}?` + query;
+      window.location.href = `/${type}?` + query;
     });
   });
 }
-function toggleActiveInput(e) {
-  e.target.disabled = !e.target.disabled;
-}
+// Creates eventListeners to update the age and weight data in the database
 function updateInputData(row, data, id) {
-  const inputs = row.querySelectorAll(".age, .weight");
-  inputs.forEach((input) => {
-    input.addEventListener("dblclick", (e) => {
-      e.target.disabled = false
-    });
-  });
   const ageInput = row.querySelector(".age > input");
   const weightInput = row.querySelector(".weight > input");
-  ageInput.addEventListener("keypress", (e) => {
-    if (e.keycode === 13 || e.which === 13) {
-      const age = e.target.value;
-      toggleActiveInput(e);
-      sendInputData(id, age, "age");
-      updateMaxHr(row);
-    }
+  ageInput.addEventListener("change", (e) => {
+    const age = e.target.value;
+    sendInputData(id, age, "age");
+    updateMaxHr(row);
   });
-  weightInput.addEventListener("keypress", (e) => {
-    if (e.keycode === 13 || e.which === 13) {
-      const weight = e.target.value;
-      toggleActiveInput(e);
-      sendInputData(id, weight, "weight");
-    }
+  weightInput.addEventListener("change", (e) => {
+    const weight = e.target.value;
+    sendInputData(id, weight, "weight");
   });
   if (data[id]) {
     if (data[id]["age"]) {
@@ -128,26 +87,26 @@ function updateMaxHr(row) {
   }
 }
 
-async function renderTemplate() {
-  const res = await fetch("/mpas/dashboard", { method: "POST" });
+async function renderTable() {
+  const res = await fetch("/dashboard", { method: "POST" });
   const data = await res.text();
   const tableContainer = document.querySelector("#data-container");
   tableContainer.innerHTML = data;
 }
 async function fetchDataOnLoad() {
-  const fetchData = await fetch("/mpas/dashboardapi", { method: "GET" });
+  const fetchData = await fetch("/api/dashboard", { method: "GET" });
   const data = await fetchData.json();
   return data;
 }
 async function getInputData() {
-  const res = await fetch("/mpas/inputdata", { method: "GET" });
+  const res = await fetch("/api/dashboard", { method: "GET" });
   const data = await res.json();
   return data;
 }
 
 async function sendInputData(id, data, type) {
   try {
-    const res = await fetch("/mpas/inputdata", {
+    await fetch("/api/dashboard", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

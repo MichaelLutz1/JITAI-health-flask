@@ -143,9 +143,6 @@ async function getCsvString(id) {
   rows.push(headers.join(','))
   data.forEach(obj => {
     const values = headers.map(header => {
-      if (header === 'weather' && obj[header]) {
-        return 'Temp: ' + obj[header]['temp'] + ' Precipitation: ' + obj[header]['precipitation'] + ' Wind: ' + obj[header]['wind'] + ' Humidity: ' + obj[header]['humidity']
-      }
       return obj[header]
     });
     rows.push(values.join(','));
@@ -158,7 +155,10 @@ async function getRawCsvString(id) {
   const rows = []
   headers = Object.keys(data[0])
   rows.push(headers.join(','))
-  data.forEach(() => {
+  data.forEach(obj => {
+    const values = headers.map(header => {
+      return obj[header]
+    });
     rows.push(values.join(','));
   });
   return rows.join('\n')
